@@ -1,0 +1,49 @@
+name: Flags and placements (שכבת ז)
+on:
+  push:
+    paths:
+      - 'שכבת ז.xlsx'
+      - 'data/config/grade7-placements.yaml'
+      - 'scripts/**'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  issues: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm ci || npm i
+      - name: Sync flags from inline list
+        id: sync
+        run: |
+          node scripts/sync-flags-from-inline.mjs
+      - name: Commit flags JSON
+        if: success()
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'data-flags/malkot-limida.json'
+          message: 'flags: update malkot-limida.json (grade ז, validated vs Excel)'
+          default_author: github_actions
+      - name: Apply grade7 placements
+        id: place
+        run: |
+          node scripts/apply-grade7-placements.mjs
+      - name: Commit placements CSV
+        if: success()
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'data-samples/placements_grade7.csv'
+          message: 'placements: grade7 (from rules)'
+          default_author: github_actions
+      - name: Open issue for failures
+        if: failure()
+        run: |
+          gh issue create --title "בעיות שיבוץ/דגלים שכבת ז" --body-file inbox/review/placements_grade7.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

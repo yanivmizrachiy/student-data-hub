@@ -1,0 +1,6 @@
+{
+  "livePreview.defaultPreviewPath": "/index.html",
+  "livePreview.openPreviewTarget": "EmbeddedPreview",
+  "livePreview.autoRefreshPreview": "OnSave",
+  "livePreview.serverKeepAliveAfterEmbeddedPreviewClose": true
+}

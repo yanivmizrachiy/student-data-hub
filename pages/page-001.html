@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>לוח בקרה — grades-app</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <h1>לוח בקרה</h1>
+      <nav class="breadcrumbs">
+        <button onclick="toPage(0)" class="btn">דף הבית</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="dashboard-stats" class="cards-grid">
+      <!-- יופיעו סטטיסטיקות מתוך IndexedDB (אין דמו בקוד סטטי) -->
+      <div class="card" id="stat-students">תלמידים: <span class="value">...</span></div>
+      <div class="card" id="stat-classes">כיתות: <span class="value">...</span></div>
+      <div class="card" id="stat-assignments">משימות: <span class="value">...</span></div>
+      <div class="card" id="stat-average">ממוצע כללי: <span class="value">...</span></div>
+    </section>
+
+    <section id="grade-distribution">
+      <h2>התפלגות ציונים</h2>
+      <canvas id="distChart" width="600" height="240"></canvas>
+    </section>
+
+    <section id="missing-list">
+      <h2>חסרים</h2>
+      <ul id="missingItems"></ul>
+    </section>
+  </main>
+
+  <script src="/assets/js/db.js" defer></script>
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

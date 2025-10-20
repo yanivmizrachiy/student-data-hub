@@ -1,0 +1,88 @@
+name: Ingest Scores (Excel-validated, ask on ambiguity)
+on:
+  push:
+    paths:
+      - "inbox/**.txt"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  issues: write
+jobs:
+  match:
+    runs-on: ubuntu-latest
+    outputs:
+      ambiguous: ${{ steps.run.outputs.ambiguous }}
+      review_file: ${{ steps.run.outputs.review_file }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Install deps
+        run: npm ci || npm i
+      - name: Run match-names
+        id: run
+        env:
+          INBOX_PATH: ${{ github.event.head_commit.modified && startsWith(github.event.head_commit.modified[0], 'inbox/') && github.event.head_commit.modified[0] || '' }}
+        run: |
+          FILE="${INBOX_PATH}"
+          if [ -z "$FILE" ]; then
+            FILE="$(ls -1 inbox/*.txt | tail -n 1)"
+          fi
+          echo "Using INBOX file: $FILE"
+          export INBOX_PATH="$FILE"
+          node scripts/match-names.mjs | tee match.log
+          AMB=$(grep -o 'AMBIGUOUS=[0-9]\+' match.log | sed 's/AMBIGUOUS=//')
+          REV=$(grep -o 'REVIEW_FILE=.*' match.log | sed 's/REVIEW_FILE=//')
+          echo "ambiguous=$AMB" >> $GITHUB_OUTPUT
+          echo "review_file=$REV" >> $GITHUB_OUTPUT
+      - name: Upload review artifact
+        if: ${{ steps.run.outputs.review_file != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: review
+          path: ${{ steps.run.outputs.review_file }}
+
+  triage:
+    needs: match
+    if: ${{ needs.match.outputs.ambiguous != '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create triage issue
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: "דרוש פתרון התאמות שמות לקובץ Inbox"
+          content-filepath: ${{ needs.match.outputs.review_file }}
+          labels: ambiguity, needs-input
+      - name: Fail workflow until resolved
+        run: |
+          echo "יש עמימות/חוסרים בשמות. נפתח Issue עם פירוט. עדכן רזולוציה ב-inbox/resolutions/… או תקן את הטקסט והריץ שוב."
+          exit 1
+
+  ingest:
+    needs: match
+    if: ${{ needs.match.outputs.ambiguous == '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Install deps
+        run: npm ci || npm i
+      - name: Run ingest (produce CSV)
+        env:
+          INBOX_PATH: ${{ github.event.head_commit.modified && startsWith(github.event.head_commit.modified[0], 'inbox/') && github.event.head_commit.modified[0] || '' }}
+        run: |
+          FILE="${INBOX_PATH}"
+          if [ -z "$FILE" ]; then
+            FILE="$(ls -1 inbox/*.txt | tail -n 1)"
+          fi
+          echo "Using INBOX file: $FILE"
+          export INBOX_PATH="$FILE"
+          node scripts/ingest-scores.mjs
+      - name: Commit CSV
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "data-samples/*.csv inbox/review/**"
+          message: "ingest: CSV from inbox (names validated vs Excel; no ambiguity)"
+          default_author: github_actions

@@ -1,0 +1,62 @@
+name: Live Preview SelfTest
+
+on:
+  push:
+    paths:
+      - ".vscode/**"
+      - "index.html"
+      - "README.md"
+      - "selftest_livepreview.sh"
+  pull_request:
+    paths:
+      - ".vscode/**"
+      - "index.html"
+      - "README.md"
+      - "selftest_livepreview.sh"
+  workflow_dispatch: {}
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect relevant changes
+        id: changed
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            .vscode/**
+            index.html
+            README.md
+            selftest_livepreview.sh
+
+      - name: Skip if no changes
+        if: steps.changed.outputs.any_changed != 'true' && github.event_name != 'workflow_dispatch'
+        run: |
+          echo "🟢 No relevant changes. Skipping selftest."
+          exit 0
+
+      - name: Ensure selftest exists (idempotent)
+        run: |
+          if [ ! -f selftest_livepreview.sh ]; then
+            cat > selftest_livepreview.sh <<'EOS'
+#!/bin/bash
+set -e
+echo "🔍 בדיקה אוטומטית של Live Preview..."
+required_files=(".vscode/settings.json" ".vscode/tasks.json" ".vscode/extensions.json" "index.html")
+missing=0
+for f in "${required_files[@]}"; do
+  [ -f "$f" ] || { echo "❌ חסר קובץ: $f"; missing=1; }
+done
+grep -q '"ms-vscode.live-server"' .vscode/extensions.json 2>/dev/null || { echo "❌ התוסף Live Preview לא מוגדר"; missing=1; }
+grep -q '"EmbeddedPreview"' .vscode/settings.json 2>/dev/null || { echo "❌ EmbeddedPreview חסר"; missing=1; }
+grep -q '"livePreview.autoRefreshPreview": "OnSave"' .vscode/settings.json 2>/dev/null || { echo "❌ autoRefreshPreview=OnSave חסר"; missing=1; }
+if [ "$missing" -eq 0 ]; then echo "🟩 SUCCESS"; else echo "🟥 FAILED"; exit 1; fi
+EOS
+            chmod +x selftest_livepreview.sh
+          fi
+
+      - name: Run SelfTest
+        run: bash selftest_livepreview.sh

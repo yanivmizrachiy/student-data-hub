@@ -1,0 +1,35 @@
+name: Ingest grades (mapping Oct 2025, H, Tal Nechemya)
+on:
+  push:
+    paths:
+      - "inbox/grades/**"
+      - "scripts/ingest-grades.mjs"
+      - "שכבת ח.xlsx"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install deps
+        run: npm i xlsx@^0.18.5
+      - name: Run ingest-grades
+        run: node scripts/ingest-grades.mjs
+      - name: Commit grades
+        if: success()
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "data/grades/2025-10/mapping/H/tal-nechemya-A/grades.csv data/grades/2025-10/mapping/H/tal-nechemya-A/grades.json data/summary/last-ingest.json"
+          message: "grades(H A, Tal Nechemya): mapping Oct 2025 (auto, validated vs Excel)"
+          default_author: github_actions
+      - name: Open issue for ingest problems
+        if: failure()
+        run: |
+          gh issue create --title "בעיות קליטה ציונים — ח׳/א׳/טל נחמיה" --body-file inbox/grades/review_H_tal-A.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

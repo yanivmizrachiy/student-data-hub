@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Auto Live Preview",
+      "type": "shell",
+      "command": "code --command livePreview.startServer && code --command livePreview.showPreviewInternal",
+      "runOptions": { "runOn": "folderOpen" },
+      "presentation": { "reveal": "never" },
+      "problemMatcher": []
+    }
+  ]
+}

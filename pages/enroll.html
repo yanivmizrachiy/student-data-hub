@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>טופס הרשמת תלמידים</title>
+  <link rel="stylesheet" href="/assets/css/theme.css">
+  <style>
+    .form-wrap{max-width:900px;margin:20px auto;background:var(--card);padding:18px;border-radius:12px}
+    label{display:block;margin-top:8px;font-weight:600}
+    input,select{width:100%;padding:8px;border-radius:8px;margin-top:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
+    .row{display:flex;gap:8px}
+    .row .col{flex:1}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px;border:1px solid rgba(255,255,255,0.04);text-align:right}
+    .admin-area{margin-top:12px;padding:12px;border-radius:10px;background:rgba(0,0,0,0.2)}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>טופס הרשמת תלמידים</h1>
+    <div class="form-wrap">
+      <div class="row">
+        <div class="col">
+          <label for="firstName">שם פרטי</label>
+          <input id="firstName" type="text" autocomplete="given-name" />
+        </div>
+        <div class="col">
+          <label for="lastName">שם משפחה</label>
+          <input id="lastName" type="text" autocomplete="family-name" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="gradeSelect">שכבה</label>
+          <select id="gradeSelect"><option value="ז">ז</option><option value="ח">ח</option><option value="ט">ט</option></select>
+        </div>
+        <div class="col">
+          <label for="trackSelect">הקבצה</label>
+          <select id="trackSelect"><option value="">בחר תחילה שכבה</option></select>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button id="submitEnroll" class="btn">שליחה</button>
+        <button id="clearSession" class="btn secondary">נקה טופס</button>
+      </div>
+
+      <section id="localList" style="margin-top:16px">
+        <h3>הרשמות מקומיות (Session)</h3>
+        <table id="enrollTable"><thead><tr><th>שם פרטי</th><th>שם משפחה</th><th>שכבה</th><th>הקבצה</th><th>מורה</th><th>תאריך</th></tr></thead><tbody id="enrollTableBody"></tbody></table>
+      </section>
+
+      <section id="adminArea" class="admin-area hidden">
+        <h4>אזור מנהל</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="saveRepoBtn" class="btn warn">שמור לריפו (CSV)</button>
+          <button id="exportLocalBtn" class="btn">ייצא CSV מקומי</button>
+          <button id="mailAllBtn" class="btn">שליחה במייל</button>
+          <button id="waAllBtn" class="btn">שיתוף ב-WhatsApp</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module">
+    import { populateTracksSelect, addEnrollment, renderTable, exportCsvLocal, mailtoAll, waShareEnrollments, saveToRepoCsv, loadTracksCsv } from '/assets/js/app.js';
+
+    const gradeSelect = document.getElementById('gradeSelect');
+    const submitBtn = document.getElementById('submitEnroll');
+    const clearBtn = document.getElementById('clearSession');
+    const adminArea = document.getElementById('adminArea');
+    const saveRepoBtn = document.getElementById('saveRepoBtn');
+    const exportLocalBtn = document.getElementById('exportLocalBtn');
+    const mailAllBtn = document.getElementById('mailAllBtn');
+    const waAllBtn = document.getElementById('waAllBtn');
+
+    gradeSelect.addEventListener('change', ()=> populateTracksSelect(gradeSelect.value));
+    submitBtn.addEventListener('click', ()=> addEnrollment());
+    clearBtn.addEventListener('click', ()=>{ if(confirm('נקה את השדות?')){ document.getElementById('firstName').value=''; document.getElementById('lastName').value=''; } });
+
+    exportLocalBtn.addEventListener('click', ()=> exportCsvLocal());
+    mailAllBtn.addEventListener('click', ()=> mailtoAll());
+    waAllBtn.addEventListener('click', ()=> waShareEnrollments());
+
+    saveRepoBtn.addEventListener('click', async ()=>{
+      const token = prompt('הכנס/י GitHub PAT (write:contents) - לא יישמר');
+      if(!token) return alert('לא סופק טוקן');
+      try{ await saveToRepoCsv(token); }catch(e){ console.error(e); alert('שגיאה בעת שמירה'); }
+    });
+
+    function updateAdminArea(){ if(sessionStorage.getItem('isAdmin')==='1') adminArea.classList.remove('hidden'); else adminArea.classList.add('hidden'); }
+    updateAdminArea(); window.addEventListener('storage', updateAdminArea);
+
+    // init
+    await loadTracksCsv(); populateTracksSelect(gradeSelect.value); renderTable();
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>טופס הרשמת תלמידים</title>
+  <link rel="stylesheet" href="/assets/css/theme.css">
+  <style>
+    .form-wrap{max-width:900px;margin:20px auto;background:var(--card);padding:18px;border-radius:12px}
+    label{display:block;margin-top:8px;font-weight:600}
+    input,select{width:100%;padding:8px;border-radius:8px;margin-top:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
+    .row{display:flex;gap:8px}
+    .row .col{flex:1}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px;border:1px solid rgba(255,255,255,0.04);text-align:right}
+    .admin-area{margin-top:12px;padding:12px;border-radius:10px;background:rgba(0,0,0,0.2)}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>טופס הרשמת תלמידים</h1>
+    <div class="form-wrap">
+      <div class="row">
+        <div class="col">
+          <label for="firstName">שם פרטי</label>
+          <input id="firstName" type="text" />
+        </div>
+        <div class="col">
+          <label for="lastName">שם משפחה</label>
+          <input id="lastName" type="text" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="gradeSelect">שכבה</label>
+          <select id="gradeSelect"><option value="ז">ז</option><option value="ח">ח</option><option value="ט">ט</option></select>
+        </div>
+        <div class="col">
+          <label for="trackSelect">הקבצה</label>
+          <select id="trackSelect"></select>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button id="submitEnroll" class="btn">שליחה</button>
+        <button id="clearSession" class="btn">נקה סשן</button>
+      </div>
+
+      <table aria-live="polite" id="enrollTable">
+        <thead><tr><th>שם פרטי</th><th>שם משפחה</th><th>שכבה</th><th>הקבצה</th><th>מורה</th><th>תאריך</th></tr></thead>
+        <tbody id="enrollTableBody"></tbody>
+      </table>
+
+      <div id="adminArea" class="admin-area hidden">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="saveRepoBtn" class="btn">שמור לריפו (CSV)</button>
+          <button id="exportLocalBtn" class="btn">ייצוא CSV מקומי</button>
+          <button id="mailBtn" class="btn">שליחה במייל</button>
+          <button id="waBtn" class="btn">שיתוף ב-WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { populateTracksSelect, addEnrollment, renderTable, exportCsvLocal, mailtoAll, waShareEnrollments, saveToRepoCsv } from '/assets/js/app.js';
+
+    const gradeSelect = document.getElementById('gradeSelect');
+    gradeSelect.addEventListener('change', ()=> populateTracksSelect(gradeSelect.value));
+
+    document.getElementById('submitEnroll').addEventListener('click', ()=>{ addEnrollment(); });
+    document.getElementById('clearSession').addEventListener('click', ()=>{ sessionStorage.removeItem('enrollments'); renderTable(); });
+
+    // admin area
+    const adminArea = document.getElementById('adminArea');
+    function updateAdminVisible(){ if(sessionStorage.getItem('isAdmin')==='1') adminArea.classList.remove('hidden'); else adminArea.classList.add('hidden'); }
+    updateAdminVisible();
+    window.addEventListener('storage', ()=>updateAdminVisible());
+
+    document.getElementById('exportLocalBtn').addEventListener('click', exportCsvLocal);
+    document.getElementById('mailBtn').addEventListener('click', mailtoAll);
+    document.getElementById('waBtn').addEventListener('click', waShareEnrollments);
+    document.getElementById('saveRepoBtn').addEventListener('click', async ()=>{
+      const token = prompt('הכנס/י GitHub Personal Access Token (write:contents) - לא ישמר בדפדפן');
+      if(!token) return alert('אין טוקן');
+      try{ await saveToRepoCsv(token); }catch(e){ console.error(e); }
+    });
+
+    // init
+    populateTracksSelect(gradeSelect.value);
+    renderTable();
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>טופס הרשמת תלמידים</title>
+  <link rel="stylesheet" href="/assets/css/theme.css">
+  <style>
+    .form-wrap{max-width:820px;margin:18px auto;background:var(--card);padding:18px;border-radius:12px}
+    label{display:block;text-align:right;margin:8px 0 4px}
+    input,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:var(--text)}
+    .row{display:flex;gap:12px}
+    .row>div{flex:1}
+    .actions{display:flex;gap:8px;justify-content:flex-start;margin-top:12px}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px;border:1px solid rgba(255,255,255,0.04);text-align:right}
+    .admin-area{margin-top:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>טופס הרשמת תלמידים</h1>
+    <div class="form-wrap">
+      <div>
+        <label for="firstName">שם פרטי</label>
+        <input id="firstName" type="text" autocomplete="given-name" />
+      </div>
+      <div>
+        <label for="lastName">שם משפחה</label>
+        <input id="lastName" type="text" autocomplete="family-name" />
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="gradeSelect">שכבה</label>
+          <select id="gradeSelect"><option value="ז">ז</option><option value="ח">ח</option><option value="ט">ט</option></select>
+        </div>
+        <div>
+          <label for="trackSelect">הקבצה</label>
+          <select id="trackSelect"><option value="">בחר תחילה שכבה</option></select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="submitEnroll" class="btn">שליחה</button>
+        <button id="clearSession" class="btn secondary">נקה טופס</button>
+      </div>
+
+      <section id="localList">
+        <h3>הרשמות מקומיות (Session)</h3>
+        <table id="enrollTable"><thead><tr><th>שם פרטי</th><th>שם משפחה</th><th>שכבה</th><th>הקבצה</th><th>מורה</th><th>תאריך</th></tr></thead><tbody></tbody></table>
+      </section>
+
+      <section id="adminArea" class="admin-area hidden">
+        <h4>אזור מנהל</h4>
+        <button id="saveRepoBtn" class="btn warn">שמור לריפו (CSV)</button>
+        <button id="exportLocalBtn" class="btn">ייצא CSV מקומי</button>
+        <button id="mailAllBtn" class="btn">שליחה במייל</button>
+        <button id="waAllBtn" class="btn">שיתוף ב-WhatsApp</button>
+      </section>
+    </div>
+  </main>
+
+  <script src="/assets/js/db.js" defer></script>
+  <script type="module">
+    import { loadTracksCsv, getEnrollments, setEnrollments, addEnrollmentObj, exportCsvLocal, mailtoAll, waShareEnrollments, saveToRepoCsv } from '/assets/js/app.js';
+
+    const gradeSelect = document.getElementById('gradeSelect');
+    const trackSelect = document.getElementById('trackSelect');
+    const submitBtn = document.getElementById('submitEnroll');
+    const enrollTable = document.querySelector('#enrollTable tbody');
+    const clearSession = document.getElementById('clearSession');
+    const adminArea = document.getElementById('adminArea');
+    const saveRepoBtn = document.getElementById('saveRepoBtn');
+    const exportLocalBtn = document.getElementById('exportLocalBtn');
+    const mailAllBtn = document.getElementById('mailAllBtn');
+    const waAllBtn = document.getElementById('waAllBtn');
+
+    let tracks = [];
+
+    async function loadTracks(){ tracks = await loadTracksCsv(); }
+
+    function populateTracksSelect(grade){
+      trackSelect.innerHTML='';
+      const opts = tracks.filter(t=>t.grade===grade).sort((a,b)=> (a.order||0)-(b.order||0));
+      if(opts.length===0){ trackSelect.innerHTML = '<option value="">אין הקבצות</option>'; return; }
+      for(const o of opts){ const opt = document.createElement('option'); opt.value = o.track_name; opt.textContent = `${o.track_name} — ${o.teacher_name}`; trackSelect.appendChild(opt); }
+    }
+
+    function renderTable(){
+      const rows = getEnrollments(); enrollTable.innerHTML='';
+      for(const r of rows){ const tr = document.createElement('tr'); tr.innerHTML = `<td>${r.first_name}</td><td>${r.last_name}</td><td>${r.grade}</td><td>${r.track}</td><td>${r.teacher || ''}</td><td>${r.timestamp}</td>`; enrollTable.appendChild(tr); }
+    }
+
+    gradeSelect.addEventListener('change', ()=> populateTracksSelect(gradeSelect.value));
+
+    submitBtn.addEventListener('click', ()=>{
+      const fn = document.getElementById('firstName').value.trim();
+      const ln = document.getElementById('lastName').value.trim();
+      const grade = gradeSelect.value; const track = trackSelect.value;
+      if(!fn || !ln || !grade || !track){ alert('נא למלא את כל השדות'); return; }
+      const teacher = tracks.find(t=>t.grade===grade && t.track_name===track)?.teacher_name || '';
+      const timestamp = new Date().toISOString();
+      // prevent duplicate in current session
+      const cur = getEnrollments();
+      const dup = cur.find(r=> r.first_name===fn && r.last_name===ln && r.grade===grade && r.track===track);
+      if(dup){ alert('כבר קיימת הרשמה זהה בסשן הנוכחי'); return; }
+      addEnrollmentObj({ first_name: fn, last_name: ln, grade, track, teacher, timestamp });
+      renderTable();
+      document.getElementById('firstName').value=''; document.getElementById('lastName').value='';
+    });
+
+    clearSession.addEventListener('click', ()=>{ if(confirm('נקה את ההרשמות בסשן?')){ setEnrollments([]); renderTable(); } });
+
+    // admin area visibility
+    if(sessionStorage.getItem('isAdmin')==='1'){ adminArea.classList.remove('hidden'); }
+
+    saveRepoBtn.addEventListener('click', async ()=>{
+      const token = prompt('הכנס/י GitHub PAT (לא יישמר):');
+      if(!token) return alert('לא סופק טוקן');
+      try{ await saveToRepoCsv(token); }catch(e){ console.error(e); }
+    });
+
+    exportLocalBtn.addEventListener('click', ()=> exportCsvLocal());
+    mailAllBtn.addEventListener('click', ()=> mailtoAll());
+    waAllBtn.addEventListener('click', ()=> waShareEnrollments());
+
+    // init
+    await loadTracks(); populateTracksSelect(gradeSelect.value); renderTable();
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+name: Grade 8 placements
+on:
+  push:
+    paths:
+      - "שכבת ח.xlsx"
+      - "inbox/placements/**"
+      - "data/config/grade8-placements.yaml"
+      - "scripts/apply-grade8-placements.mjs"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  placements:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install deps
+        run: npm i xlsx js-yaml
+      - name: Run placements
+        run: node scripts/apply-grade8-placements.mjs
+      - name: Commit placements
+        if: success()
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "data-samples/placements_grade8.csv data/config/grade8-placements.yaml"
+          message: "placements(grade 8): apply rules + A1 Yaniv Raz overrides (validated vs Excel)"
+          default_author: github_actions
+      - name: Open issue for placement problems
+        if: failure()
+        run: |
+          gh issue create --title "בעיות שיבוץ שכבת ח׳" --body-file inbox/placements/review_grade8.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
