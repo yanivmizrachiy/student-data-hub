@@ -11,7 +11,12 @@
   <header class="app-header">
     <div class="container header-inner">
       <h1>לוח בקרה</h1>
-      <nav class="breadcrumbs">
+      <nav class="breadcrumbs" style="display:flex;gap:8px;">
+        <button onclick="toPage(1)" class="btn grade-7">כיתה ז</button>
+        <button onclick="toPage(2)" class="btn grade-8">כיתה ח</button>
+        <button onclick="toPage(3)" class="btn grade-9">כיתה ט</button>
+        <button onclick="toPage(4)" class="btn">משימות</button>
+        <button onclick="toPage(5)" class="btn">יומן ציונים</button>
         <button onclick="toPage(0)" class="btn">דף הבית</button>
       </nav>
     </div>

@@ -1,5 +1,180 @@
-<!doctype html><meta charset="utf-8"><title>grade7</title>
-<body dir="rtl" style="font-family:Heebo;background:#0b3a82;color:#eaf3ff;padding:20px">
-<h2>עמוד: grade7</h2>
-<a href="../index.html" style="color:#fff">← חזרה לעמוד הראשי</a>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>שכבת ז׳ – תלמידים והקבצות</title>
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body{background:linear-gradient(120deg,#0b3a82,#0f56c4 80%);color:#eaf3ff;font-family:Heebo,Arial,sans-serif;margin:0;min-height:100vh;}
+    .container{max-width:1100px;margin:32px auto;padding:0 16px;}
+    h1{font-size:2.2rem;font-weight:900;margin:0 0 18px;letter-spacing:.5px;text-shadow:0 2px 8px #0002;}
+    .groups{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+    .group-btn{background:rgba(255,255,255,.12);border:2px solid #fff2;border-radius:14px;padding:16px 28px;font-size:1.15rem;font-weight:700;color:#fff;cursor:pointer;transition:.2s;box-shadow:0 2px 8px #0001;min-width:170px;display:flex;flex-direction:column;align-items:center;}
+    .group-btn.active,.group-btn:focus{background:#fff;color:#0b3a82;outline:none}
+    .group-meta{font-size:0.98rem;opacity:.85;margin-top:6px;}
+    .group-count{font-size:1.1em;font-weight:800;}
+    table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.08);border-radius:14px;overflow:hidden;box-shadow:0 4px 24px #0002;}
+    th,td{padding:10px 8px;text-align:right;}
+    th{background:rgba(11,58,130,.85);color:#fff;font-weight:800;}
+    tr:nth-child(even){background:rgba(255,255,255,.04)}
+    .score{font-weight:800;}
+    .back{margin:18px 0;display:inline-block;color:#fff;text-decoration:none;font-weight:700;}
+    .nav-bar{margin:24px 0 0;display:flex;gap:12px;justify-content:center;}
+    .nav-btn{background:#fff;color:#0b3a82;border-radius:10px;padding:8px 18px;font-weight:700;border:none;cursor:pointer;transition:.2s;box-shadow:0 2px 8px #0001;}
+    .nav-btn:active{background:#eaf3ff;}
+    @media(max-width:700px){.groups{flex-direction:column;gap:8px}.container{padding:0 2px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back">← חזרה לעמוד הראשי</a>
+    <h1>שכבת ז׳ – תלמידים והקבצות</h1>
+    <div class="groups" id="groups"></div>
+    <div class="nav-bar" id="navBar"></div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>שם פרטי</th>
+          <th>שם משפחה</th>
+          <th>כיתה</th>
+          <th>הקבצה</th>
+          <th>ציון</th>
+        </tr>
+      </thead>
+      <tbody id="students"></tbody>
+    </table>
+  </div>
+  <script>
+    // נתוני ציונים (העתק מהקלט)
+    const raw = `מאור	מזרחי	ז’1	100
+אדל	פאילייב	ז' 1	100
+טליה	ברימט	ז' 1	99
+דניאל	ברקוביץ	ז' 1	99
+שיר	זכריה	ז' 1	98
+מאיה	חודורוב	ז' 1	98
+סופיה ניצה	שוורצר	ז' 1	98
+מעיין	עמדי	ז' 1	97
+אריאל	פינקס	ז' 1	97
+יעל	שצמן	ז' 1	97
+עדי	באנון	ז' 3	96
+נועה	מכחל	ז' 1	95
+דניאלה	מוגס	ז' 1	94
+אוריה	סיאנוב	ז' 1	93
+אופק	כהן	ז' 1	92
+נתנאל	מלניק	ז' 1	89
+יהלי	ציקווש	ז' 1	89
+אופיר חיים	אופק	ז' 4	89
+ליהי	אוסקר	ז' 1	88
+אוריה אברהם	ששון	ז' 1	88
+לירן	אזולאי	ז' 1	87
+בנימין	דהן	ז' 1	87
+עילי	שוורץ	ז' 1	87
+דניאל	כהן נחמו	ז' 4	87
+עידן ישראל	אמויאל	ז' 3	85
+נתנאל	ירמיהו	ז' 3	85
+אייל	רחמים	ז' 3	85
+אריאל	בן כליפה	ז' 4	82
+אושרי	גבאי	ז' 4	82
+עילאי	לוי אילוז	ז’2	81
+דוד	סולטן	ז' 4	80
+טאמנסאו	סנבטו	ז' 3	80
+רבקה	קוסשוילי	ז' 3	80
+נהוראי שלמה	ששון	ז' 4	79
+נווה	אסיאג	ז' 4	77
+ניר	שכטמן	ז' 1	76
+סתיו	מזרחי	ז' 3	76
+גבריאל	אלישקובי	ז' 3	74
+אלרואי משה	גידניאן	ז' 4	74
+גיא	כהן	ז' 4	71
+ירין	גיא	ז' 4	69
+ארטיום	חקימוב	ז' 3	69
+עדי	באנון	ז' 3	68
+אגם	כהן	ז' 4	68
+אלין	בנישו	ז' 3	66
+ליאם ציון	פרטוק	ז’2	65
+ליאו	בנד	ז’2	61
+ליעד מאיר	בר	ז’2	56
+אייל	דוידוב	ז’2	56
+אסף	דאבוש	ז' 3	55
+שי	קידן	ז’2	55
+ליאן	אגמי	ז' 3	53
+אורי	מטר	ז’3	53
+ירין עמרם	בן חמו	ז' 3	52
+יהלי	ארגאו	ז' 3	51
+אושר	בן מיכאל	ז' 3	51
+ליאן	מזרחי	ז' 4	51
+ליאן	אלמליח	ז' 4	49
+נועם	אליאב	ז’2	48
+אליה	מנזור	ז’2	46
+אושרי	הולנדר	ז' 4	45
+גלי	בן חיים	ז’2	45
+לייה	מזרחי	ז' 4	43
+מאור	בביוב	ז’2	41
+ליה	חפצדי	ז’2	40
+מאור	אדרי	ז' 4	39
+בת אל	האילו	ז' 4	37
+אושר עזרא	מזרחי	ז’2	30
+אורי שמעון	צרפי	ז’2	17
+הודיה	טל-שיר	ז’2	15
+נטליה	צ`יגירב	ז' 4	9
+עדינה	רזייב	ז' 1	
+אמילי	שמש	ז' 1	
+נטע	איסיאס	ז' 3	`;
+    // נרמול כיתות
+    function normalizeClass(c) {
+      return c.replace(/[׳'’`]/g, "'").replace(/\s/g, '').replace(/ז['׳’`]?\s*1/, 'ז1').replace(/ז['׳’`]?\s*2/, 'ז2').replace(/ז['׳’`]?\s*3/, 'ז3').replace(/ז['׳’`]?\s*4/, 'ז4');
+    }
+    // שיוך הקבצה ומורה לפי class
+    function getGroupInfo(cls) {
+      if(cls==='ז1') return {group:'מדעית', teacher:'טל נחמיה'};
+      if(cls==='ז2') return {group:'מקדמת', teacher:'הילה הנסב'};
+      return {group:'א1', teacher:'יניב רז'};
+    }
+    // הפקת תלמידים
+    const students = raw.trim().split(/\n/).map(line => {
+      const [first,last,cls,score] = line.split(/\t|\s{2,}/);
+  const raw = `מאור	מזרחי	ז'1	100
+      const ncls = normalizeClass(cls||'');
+      const info = getGroupInfo(ncls);
+      return {first,last,class:ncls,score:score||'',group:info.group,teacher:info.teacher};
+    });
+    // קבוצות ייחודיות
+    const groupKeys = Array.from(new Set(students.map(s=>s.group)));
+    // רינדור כפתורי הקבצות
+    const groupsDiv = document.getElementById('groups');
+    groupKeys.forEach((g,i)=>{
+      const groupStudents = students.filter(s=>s.group===g);
+      const teacher = groupStudents[0]?.teacher||'';
+      const btn = document.createElement('button');
+      btn.className = 'group-btn'+(i===0?' active':'');
+      btn.innerHTML = `<div>${g}</div><div class="group-meta">מורה: ${teacher}</div><div class="group-count">${groupStudents.length} תלמידים</div>`;
+      btn.onclick = ()=>renderTable(g);
+      groupsDiv.appendChild(btn);
+    });
+    // ניווט בין הקבצות
+    const navBar = document.getElementById('navBar');
+    groupKeys.forEach((g,i)=>{
+      const nav = document.createElement('button');
+      nav.className = 'nav-btn';
+      nav.textContent = g;
+      nav.onclick = ()=>renderTable(g);
+      navBar.appendChild(nav);
+    });
+    // רינדור טבלה
+    function renderTable(group){
+      document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
+      Array.from(groupsDiv.children).find(b=>b.textContent.includes(group)).classList.add('active');
+      const tbody = document.getElementById('students');
+      tbody.innerHTML = '';
+      let n=1;
+      students.filter(s=>s.group===group).forEach(s=>{
+        tbody.innerHTML += `<tr><td>${n++}</td><td>${s.first}</td><td>${s.last}</td><td>${s.class}</td><td>${s.group}</td><td class="score">${s.score||'—'}</td></tr>`;
+      });
+    }
+    renderTable(groupKeys[0]);
+  </script>
 </body>
+</html>

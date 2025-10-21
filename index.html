@@ -1,41 +1,106 @@
-
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ניהול תלמידים — חטיבת ביניים</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="assets/css/theme.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- פונט עברי נקי -->
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- עיצוב מותאם -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- צבע לדפדפנים ניידים -->
+  <meta name="theme-color" content="#0e1f40" />
 </head>
-<body class="home blue">
-  <header class="hero">
-    <h1>ניהול תלמידים — חטיבת ביניים</h1>
-    <div class="sub">האתר מנוהל על ידי יניב רז <button id="editBtn" class="edit">עריכה</button></div>
+<body>
+  <!-- רקע דקורטיבי -->
+  <div class="bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <!-- סרגל עליון -->
+  <header class="topbar container">
+    <div class="brand">
+      <span class="logo">📚</span>
+      <span class="brand-title">ניהול תלמידים</span>
+      <span class="brand-sub">חטיבת ביניים</span>
+    </div>
+
+    <div class="admin">
+      <button id="editBtn" class="btn btn-ghost" aria-label="עריכה">עריכה</button>
+      <small class="muted">האתר מנוהל על ידי יניב רז</small>
+    </div>
   </header>
 
-  <main class="grid">
-    <a href="pages/grade7.html" class="card">
-      <div class="title">שכבת ז׳</div>
-      <div class="meta">סה״כ: <span id="countZ">—</span> תלמידים</div>
-    </a>
-    <a href="pages/grade8.html" class="card">
-      <div class="title">שכבת ח׳</div>
-      <div class="meta">סה״כ: <span id="countH">—</span> תלמידים</div>
-    </a>
-    <a href="pages/grade9.html" class="card">
-      <div class="title">שכבת ט׳</div>
-      <div class="meta">סה״כ: <span id="countT">—</span> תלמידים</div>
-    </a>
+  <!-- אזור גיבור מרכזי -->
+  <main class="hero container">
+    <h1 class="hero-title">ברוכים הבאים למערכת ניהול התלמידים</h1>
+    <p class="hero-subtitle">
+      בחרו שכבה לצפייה במידע. המספרים מתעדכנים אוטומטית כשקבצי הנתונים משתנים.
+    </p>
+
+    <!-- כפתורי שכבות (Cards) -->
+    <section class="grid">
+      <!-- שכבת ז -->
+      <a class="grade-card" href="grade7.html" aria-label="שכבת ז'">
+        <div class="badge">ז׳</div>
+        <h2>שכבת ז׳</h2>
+        <p class="count"><span id="count7">—</span> תלמידים</p>
+        <div class="cta">כניסה</div>
+      </a>
+
+      <!-- שכבת ח -->
+      <a class="grade-card" href="grade8.html" aria-label="שכבת ח'">
+        <div class="badge green">ח׳</div>
+        <h2>שכבת ח׳</h2>
+        <p class="count"><span id="count8">—</span> תלמידים</p>
+        <div class="cta">כניסה</div>
+      </a>
+
+      <!-- שכבת ט -->
+      <a class="grade-card" href="grade9.html" aria-label="שכבת ט'">
+        <div class="badge amber">ט׳</div>
+        <h2>שכבת ט׳</h2>
+        <p class="count"><span id="count9">—</span> תלמידים</p>
+        <div class="cta">כניסה</div>
+      </a>
+    </section>
   </main>
 
-  <footer class="footer">
-    <div>סך הכל תלמידים בחטיבת הביניים: <strong id="countTotal">—</strong></div>
+  <!-- סיכום כולל -->
+  <footer class="footer container">
+    <div class="summary">
+      <span class="sum-label">סך הכל תלמידים בחטיבת הביניים:</span>
+      <span id="totalCount" class="sum-number">—</span>
+    </div>
+    <nav class="small-links">
+      <a href="admin.html" class="muted">מסך ניהול (למנהלים)</a>
+      <span class="dots">·</span>
+      <a href="about.html" class="muted">אודות</a>
+    </nav>
   </footer>
 
-  <script src="script.js" type="module"></script>
+  <!-- מודאל אימות מנהל -->
+  <dialog id="adminDialog" class="dialog">
+    <form method="dialog" class="dialog-card" id="adminForm">
+      <h3>כניסת מנהל</h3>
+      <p class="muted">הזן קוד מנהל כדי לערוך נתונים.</p>
+      <label class="field">
+        <span>קוד מנהל</span>
+        <input id="adminCode" type="password" inputmode="numeric" autocomplete="off" placeholder="******" required />
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn btn-ghost" type="button" id="cancelAdmin">בטל</button>
+        <button class="btn" type="submit">אשר</button>
+      </div>
+      <p id="adminError" class="error" role="alert" hidden>קוד שגוי</p>
+    </form>
+  </dialog>
+
+  <script src="script.js" defer></script>
 </body>
 </html>

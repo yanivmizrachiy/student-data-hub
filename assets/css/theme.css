@@ -8,6 +8,16 @@
   --text:#e6eef8;
   --muted:#9fb0d6;
   --danger:#ff6b6b;
+  /* צבעים יוקרתיים לכיתות */
+  --grade-7:linear-gradient(90deg,#1E63D1 0%,#6DD5FA 100%);
+  --grade-8:linear-gradient(90deg,#43E97B 0%,#38F9D7 100%);
+  --grade-9:linear-gradient(90deg,#F7971E 0%,#FFD200 100%);
+  --grade-7-solid:#1E63D1;
+  --grade-8-solid:#43E97B;
+  --grade-9-solid:#F7971E;
+  --btn-shadow:0 4px 16px rgba(30,99,209,0.18);
+  --btn-radius:14px;
+  --btn-font:'Heebo', 'Assistant', system-ui;
 }
 html,body{height:100%;margin:0;font-family:'Heebo', 'Assistant', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;background:linear-gradient(180deg,var(--bg),#071028);color:var(--text);direction:rtl}
 .container{max-width:1100px;margin:0 auto;padding:16px}
@@ -16,8 +26,14 @@ html,body{height:100%;margin:0;font-family:'Heebo', 'Assistant', system-ui, -app
 .nav-actions .btn{margin-inline-start:8px}
 .main-landing{padding:40px 16px}
 .quick-cards{display:flex;gap:12px;flex-wrap:wrap}
-.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
-.btn{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#fff;border:0;padding:8px 12px;border-radius:10px;cursor:pointer}
+.card{background:var(--card);padding:18px;border-radius:18px;box-shadow:0 8px 32px rgba(2,6,23,0.18);border:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:box-shadow 0.15s;}
+.card:hover{box-shadow:0 12px 48px rgba(30,99,209,0.18);}
+.btn{background:var(--accent);color:#fff;border:0;padding:10px 18px;border-radius:var(--btn-radius);cursor:pointer;font-family:var(--btn-font);font-size:1.08em;box-shadow:var(--btn-shadow);transition:transform 0.12s,box-shadow 0.12s;}
+.btn:hover,.btn:focus{transform:scale(1.04);box-shadow:0 8px 32px rgba(30,99,209,0.22);}
+.btn.grade-7{background:var(--grade-7);color:#fff;}
+.btn.grade-8{background:var(--grade-8);color:#fff;}
+.btn.grade-9{background:var(--grade-9);color:#fff;}
+.btn.active{border:2px solid #fff;box-shadow:0 0 0 4px rgba(255,255,255,0.12);}
 .btn.warn{background:linear-gradient(180deg,var(--danger),#d94b4b)}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 .card .value{font-weight:700}

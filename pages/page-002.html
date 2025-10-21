@@ -13,8 +13,18 @@
 <body>
   <main class="container">
     <header class="app-header">
-      <h1 id="pageTitle">כיתות</h1>
-      <div class="small-note">מנוהל על ידי יניב רז</div>
+      <div class="container header-inner">
+        <h1 id="pageTitle">כיתות</h1>
+        <nav style="display:flex;gap:8px;">
+          <button onclick="toPage(1)" class="btn grade-7">ז</button>
+          <button onclick="toPage(2)" class="btn grade-8">ח</button>
+          <button onclick="toPage(3)" class="btn grade-9">ט</button>
+          <button onclick="toPage(0)" class="btn">לוח בקרה</button>
+          <button onclick="toPage(4)" class="btn">משימות</button>
+          <button onclick="toPage(5)" class="btn">יומן ציונים</button>
+        </nav>
+        <div class="small-note">מנוהל על ידי יניב רז</div>
+      </div>
     </header>
 
     <section class="controls">

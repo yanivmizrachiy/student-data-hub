@@ -1,6 +1,5 @@
 {
-  "livePreview.defaultPreviewPath": "/index.html",
-  "livePreview.openPreviewTarget": "EmbeddedPreview",
-  "livePreview.autoRefreshPreview": "OnSave",
-  "livePreview.serverKeepAliveAfterEmbeddedPreviewClose": true
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 800,
+  "editor.formatOnSave": true
 }
