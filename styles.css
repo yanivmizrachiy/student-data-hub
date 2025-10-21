@@ -1,63 +1,54 @@
-/* צבעים וטיפוגרפיה */
-:root{
-  --bg-1:#0e1f40;
-  --bg-2:#112b61;
-  --glass: rgba(255,255,255,0.08);
-  --stroke: rgba(255,255,255,0.15);
-  --text: #eef3ff;
-  --muted:#b9c1e6;
-  --accent:#4ea1ff;
-  --green:#35d0a0;
-  --amber:#ffc14d;
-  --shadow: 0 10px 30px rgba(0,0,0,0.35);
-  --radius: 18px;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Heebo", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Hebrew", Arial, sans-serif;
+  background: linear-gradient(120deg, #0e1f40 0%, #112b61 100%);
+  color: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-* { box-sizing:border-box }
-html,body { height:100% }
-body{
-  margin:0;
-  font-family:"Heebo",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Hebrew",Arial,sans-serif;
-  background: radial-gradient(1000px 600px at 85% -10%, #173d8e 0%, transparent 60%),
-              linear-gradient(180deg, var(--bg-1), var(--bg-2));
-  color:var(--text);
+.landing {
+  background: rgba(255,255,255,0.04);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  padding: 48px 36px 36px 36px;
+  text-align: center;
+  min-width: 320px;
+  min-height: 320px;
 }
 
-/* רקעי “בלוב” אנימטיביים */
-.bg{ position:fixed; inset:0; overflow:hidden; z-index:-1 }
-.blob{ position:absolute; width:42vmax; height:42vmax; filter: blur(70px); opacity:.25; border-radius:50% }
-.blob.b1{ background:#2679ff; left:-10vmax; top:-6vmax; animation:float 22s ease-in-out infinite }
-.blob.b2{ background:#22d6a5; right:-8vmax; top:20vh; animation:float 26s ease-in-out infinite reverse }
-.blob.b3{ background:#ffaa3b; left:35vw; bottom:-15vmax; animation:float 30s ease-in-out infinite }
-@keyframes float{
-  0%,100%{ transform:translate3d(0,0,0) scale(1) }
-  50%{ transform:translate3d(0,-20px,0) scale(1.05) }
+.landing h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
 }
 
-/* קונטיינר */
-.container{ width:min(1200px, 92%); margin-inline:auto }
-
-/* טופ-בר */
-.topbar{
-  padding:24px 0 8px;
-  display:flex; align-items:center; justify-content:space-between;
+.landing nav {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-.brand{ display:flex; align-items:baseline; gap:12px }
-.logo{ font-size:28px }
-.brand-title{ font-weight:800; font-size:1.6rem }
-.brand-sub{ color:var(--muted); font-weight:600 }
-.admin{ display:flex; gap:10px; align-items:center }
-.muted{ color:var(--muted) }
 
-/* כפתורים */
-.btn{
-  background:linear-gradient(180deg,#4ea1ff,#2a77ff);
-  color:white; border:none; padding:10px 16px; border-radius:999px;
-  box-shadow: var(--shadow);
-  cursor:pointer; font-weight:700; letter-spacing:.2px;
-  transition:transform .15s ease, filter .2s ease, box-shadow .2s ease;
+.grade-link {
+  display: block;
+  background: linear-gradient(90deg, #4ea1ff 0%, #2a77ff 100%);
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 16px 0;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(46, 161, 255, 0.13);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
-.btn:hover{ transform: translateY(-1px); filter:brightness(1.05) }
+.grade-link:hover {
+  background: linear-gradient(90deg, #2a77ff 0%, #4ea1ff 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(46, 161, 255, 0.18);
+}
 .btn:active{ transform: translateY(0) scale(.98) }
 .btn-ghost{
   background:transparent; border:1px solid var(--stroke); color:var(--text);
