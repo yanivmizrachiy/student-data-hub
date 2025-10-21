@@ -7,174 +7,277 @@
   <link rel="stylesheet" href="../assets/css/theme.css">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body{background:linear-gradient(120deg,#0b3a82,#0f56c4 80%);color:#eaf3ff;font-family:Heebo,Arial,sans-serif;margin:0;min-height:100vh;}
-    .container{max-width:1100px;margin:32px auto;padding:0 16px;}
-    h1{font-size:2.2rem;font-weight:900;margin:0 0 18px;letter-spacing:.5px;text-shadow:0 2px 8px #0002;}
-    .groups{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap}
-    .group-btn{background:rgba(255,255,255,.12);border:2px solid #fff2;border-radius:14px;padding:16px 28px;font-size:1.15rem;font-weight:700;color:#fff;cursor:pointer;transition:.2s;box-shadow:0 2px 8px #0001;min-width:170px;display:flex;flex-direction:column;align-items:center;}
-    .group-btn.active,.group-btn:focus{background:#fff;color:#0b3a82;outline:none}
-    .group-meta{font-size:0.98rem;opacity:.85;margin-top:6px;}
-    .group-count{font-size:1.1em;font-weight:800;}
-    table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.08);border-radius:14px;overflow:hidden;box-shadow:0 4px 24px #0002;}
-    th,td{padding:10px 8px;text-align:right;}
-    th{background:rgba(11,58,130,.85);color:#fff;font-weight:800;}
-    tr:nth-child(even){background:rgba(255,255,255,.04)}
-    .score{font-weight:800;}
-    .back{margin:18px 0;display:inline-block;color:#fff;text-decoration:none;font-weight:700;}
-    .nav-bar{margin:24px 0 0;display:flex;gap:12px;justify-content:center;}
-    .nav-btn{background:#fff;color:#0b3a82;border-radius:10px;padding:8px 18px;font-weight:700;border:none;cursor:pointer;transition:.2s;box-shadow:0 2px 8px #0001;}
-    .nav-btn:active{background:#eaf3ff;}
-    @media(max-width:700px){.groups{flex-direction:column;gap:8px}.container{padding:0 2px}}
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Heebo', Arial, sans-serif;
+      background: radial-gradient(ellipse at 80% 0%, #1e63d1 0%, #0b1220 70%), linear-gradient(120deg, #0b3a82 0%, #0f56c4 80%);
+      color: #eaf3ff;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto 32px auto;
+      padding: 0 18px;
+      background: rgba(16,24,40,0.82);
+      border-radius: 22px;
+      box-shadow: 0 8px 48px 0 #1e63d144, 0 1.5px 8px #0002;
+      backdrop-filter: blur(8px);
+    }
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 900;
+      margin: 0 0 28px;
+      letter-spacing: 1.5px;
+      text-shadow: 0 4px 32px #1e63d1cc, 0 2px 8px #0002;
+      background: linear-gradient(90deg,#4ea1ff,#43e97b,#ffd200);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .groups {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .group-btn {
+      background: linear-gradient(120deg,#1e63d1 0%,#43e97b 100%);
+      border: none;
+      border-radius: 18px;
+      padding: 20px 36px;
+      font-size: 1.18rem;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 24px #1e63d144, 0 1.5px 8px #0002;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform .18s, box-shadow .18s, background .18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .group-btn.active, .group-btn:focus {
+      background: linear-gradient(90deg,#ffd200 0%,#43e97b 100%);
+      color: #0b3a82;
+      box-shadow: 0 8px 32px #ffd20044, 0 1.5px 8px #0002;
+      outline: none;
+      transform: scale(1.04);
+    }
+    .group-meta {
+      font-size: 1.01rem;
+      opacity: .88;
+      margin-top: 7px;
+      color: #b9c1e6;
+    }
+    .group-count {
+      font-size: 1.13em;
+      font-weight: 900;
+      color: #ffd200;
+      margin-top: 4px;
+      text-shadow: 0 2px 8px #0002;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: rgba(255,255,255,0.09);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 32px #1e63d144, 0 1.5px 8px #0002;
+      margin-bottom: 18px;
+    }
+    th, td {
+      padding: 13px 10px;
+      text-align: right;
+      font-size: 1.08rem;
+    }
+    th {
+      background: linear-gradient(90deg,#1e63d1 0%,#43e97b 100%);
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #ffd200;
+    }
+    tr:nth-child(even) { background: rgba(255,255,255,0.04); }
+    tr:hover { background: rgba(255,255,255,0.13); transition: background .15s; }
+    .score {
+      font-weight: 900;
+      color: #43e97b;
+      text-shadow: 0 1px 4px #0002;
+    }
+    .back {
+      margin: 22px 0 0 0;
+      display: inline-block;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.1rem;
+      background: linear-gradient(90deg,#1e63d1 0%,#43e97b 100%);
+      padding: 8px 22px;
+      border-radius: 999px;
+      box-shadow: 0 2px 8px #1e63d144;
+      transition: background .18s, color .18s;
+    }
+    .back:hover { background: linear-gradient(90deg,#ffd200 0%,#43e97b 100%); color: #0b3a82; }
+    .nav-bar {
+      margin: 28px 0 0;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .nav-btn {
+      background: linear-gradient(90deg,#1e63d1 0%,#43e97b 100%);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 24px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      font-size: 1.08rem;
+      box-shadow: 0 2px 8px #1e63d144;
+      transition: background .18s, color .18s, transform .15s;
+    }
+    .nav-btn:active, .nav-btn:focus {
+      background: linear-gradient(90deg,#ffd200 0%,#43e97b 100%);
+      color: #0b3a82;
+      outline: none;
+      transform: scale(1.04);
+    }
+    @media(max-width:900px){.container{padding:0 2px}}
+    @media(max-width:700px){.groups{flex-direction:column;gap:10px}.container{padding:0 1px}}
   </style>
 </head>
 <body>
   <div class="container">
     <a href="../index.html" class="back">← חזרה לעמוד הראשי</a>
-    <h1>שכבת ז׳ – תלמידים והקבצות</h1>
+  <h1 id="main-title"></h1>
+  <nav class="breadcrumb" id="breadcrumb"></nav>
     <div class="groups" id="groups"></div>
     <div class="nav-bar" id="navBar"></div>
-    <table>
+    <table class="students" dir="rtl">
       <thead>
         <tr>
-          <th>#</th>
-          <th>שם פרטי</th>
-          <th>שם משפחה</th>
-          <th>כיתה</th>
-          <th>הקבצה</th>
-          <th>ציון</th>
+          <th scope="col">#</th>
+          <th scope="col">שם משפחה</th>
+          <th scope="col">שם פרטי</th>
+          <th scope="col">כיתה</th>
+          <th scope="col">סוג המבחן</th>
         </tr>
       </thead>
       <tbody id="students"></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5">
+            <strong>ממוצע:</strong> <span id="avg"></span>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <strong>סה״כ תלמידים:</strong> <span id="total"></span>
+          </td>
+        </tr>
+      </tfoot>
     </table>
+    <p class="note">⚠ מי שליד שמו כוכבית משתתף בתוכנית "מלקות ללמידה".</p>
   </div>
   <script>
     // נתוני ציונים (העתק מהקלט)
     const raw = `מאור	מזרחי	ז’1	100
-אדל	פאילייב	ז' 1	100
-טליה	ברימט	ז' 1	99
-דניאל	ברקוביץ	ז' 1	99
-שיר	זכריה	ז' 1	98
-מאיה	חודורוב	ז' 1	98
-סופיה ניצה	שוורצר	ז' 1	98
-מעיין	עמדי	ז' 1	97
-אריאל	פינקס	ז' 1	97
-יעל	שצמן	ז' 1	97
-עדי	באנון	ז' 3	96
-נועה	מכחל	ז' 1	95
-דניאלה	מוגס	ז' 1	94
-אוריה	סיאנוב	ז' 1	93
-אופק	כהן	ז' 1	92
-נתנאל	מלניק	ז' 1	89
-יהלי	ציקווש	ז' 1	89
-אופיר חיים	אופק	ז' 4	89
-ליהי	אוסקר	ז' 1	88
-אוריה אברהם	ששון	ז' 1	88
-לירן	אזולאי	ז' 1	87
-בנימין	דהן	ז' 1	87
-עילי	שוורץ	ז' 1	87
-דניאל	כהן נחמו	ז' 4	87
-עידן ישראל	אמויאל	ז' 3	85
-נתנאל	ירמיהו	ז' 3	85
-אייל	רחמים	ז' 3	85
-אריאל	בן כליפה	ז' 4	82
-אושרי	גבאי	ז' 4	82
-עילאי	לוי אילוז	ז’2	81
-דוד	סולטן	ז' 4	80
-טאמנסאו	סנבטו	ז' 3	80
-רבקה	קוסשוילי	ז' 3	80
-נהוראי שלמה	ששון	ז' 4	79
-נווה	אסיאג	ז' 4	77
-ניר	שכטמן	ז' 1	76
-סתיו	מזרחי	ז' 3	76
-גבריאל	אלישקובי	ז' 3	74
-אלרואי משה	גידניאן	ז' 4	74
-גיא	כהן	ז' 4	71
-ירין	גיא	ז' 4	69
-ארטיום	חקימוב	ז' 3	69
-עדי	באנון	ז' 3	68
-אגם	כהן	ז' 4	68
-אלין	בנישו	ז' 3	66
-ליאם ציון	פרטוק	ז’2	65
-ליאו	בנד	ז’2	61
-ליעד מאיר	בר	ז’2	56
-אייל	דוידוב	ז’2	56
-אסף	דאבוש	ז' 3	55
-שי	קידן	ז’2	55
-ליאן	אגמי	ז' 3	53
-אורי	מטר	ז’3	53
-ירין עמרם	בן חמו	ז' 3	52
-יהלי	ארגאו	ז' 3	51
-אושר	בן מיכאל	ז' 3	51
-ליאן	מזרחי	ז' 4	51
-ליאן	אלמליח	ז' 4	49
-נועם	אליאב	ז’2	48
-אליה	מנזור	ז’2	46
-אושרי	הולנדר	ז' 4	45
-גלי	בן חיים	ז’2	45
-לייה	מזרחי	ז' 4	43
-מאור	בביוב	ז’2	41
-ליה	חפצדי	ז’2	40
-מאור	אדרי	ז' 4	39
-בת אל	האילו	ז' 4	37
-אושר עזרא	מזרחי	ז’2	30
-אורי שמעון	צרפי	ז’2	17
-הודיה	טל-שיר	ז’2	15
-נטליה	צ`יגירב	ז' 4	9
-עדינה	רזייב	ז' 1	
-אמילי	שמש	ז' 1	
-נטע	איסיאס	ז' 3	`;
-    // נרמול כיתות
-    function normalizeClass(c) {
-      return c.replace(/[׳'’`]/g, "'").replace(/\s/g, '').replace(/ז['׳’`]?\s*1/, 'ז1').replace(/ז['׳’`]?\s*2/, 'ז2').replace(/ז['׳’`]?\s*3/, 'ז3').replace(/ז['׳’`]?\s*4/, 'ז4');
-    }
-    // שיוך הקבצה ומורה לפי class
-    function getGroupInfo(cls) {
       if(cls==='ז1') return {group:'מדעית', teacher:'טל נחמיה'};
       if(cls==='ז2') return {group:'מקדמת', teacher:'הילה הנסב'};
       return {group:'א1', teacher:'יניב רז'};
     }
-    // הפקת תלמידים
-    const students = raw.trim().split(/\n/).map(line => {
-      const [first,last,cls,score] = line.split(/\t|\s{2,}/);
-  const raw = `מאור	מזרחי	ז'1	100
-      const ncls = normalizeClass(cls||'');
-      const info = getGroupInfo(ncls);
-      return {first,last,class:ncls,score:score||'',group:info.group,teacher:info.teacher};
-    });
-    // קבוצות ייחודיות
-    const groupKeys = Array.from(new Set(students.map(s=>s.group)));
-    // רינדור כפתורי הקבצות
-    const groupsDiv = document.getElementById('groups');
-    groupKeys.forEach((g,i)=>{
-      const groupStudents = students.filter(s=>s.group===g);
-      const teacher = groupStudents[0]?.teacher||'';
-      const btn = document.createElement('button');
-      btn.className = 'group-btn'+(i===0?' active':'');
-      btn.innerHTML = `<div>${g}</div><div class="group-meta">מורה: ${teacher}</div><div class="group-count">${groupStudents.length} תלמידים</div>`;
-      btn.onclick = ()=>renderTable(g);
-      groupsDiv.appendChild(btn);
-    });
-    // ניווט בין הקבצות
-    const navBar = document.getElementById('navBar');
-    groupKeys.forEach((g,i)=>{
-      const nav = document.createElement('button');
-      nav.className = 'nav-btn';
-      nav.textContent = g;
-      nav.onclick = ()=>renderTable(g);
-      navBar.appendChild(nav);
-    });
-    // רינדור טבלה
-    function renderTable(group){
-      document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
-      Array.from(groupsDiv.children).find(b=>b.textContent.includes(group)).classList.add('active');
-      const tbody = document.getElementById('students');
-      tbody.innerHTML = '';
-      let n=1;
-      students.filter(s=>s.group===group).forEach(s=>{
-        tbody.innerHTML += `<tr><td>${n++}</td><td>${s.first}</td><td>${s.last}</td><td>${s.class}</td><td>${s.group}</td><td class="score">${s.score||'—'}</td></tr>`;
-      });
+  <script>
+    // טוען תלמידים אמיתיים מ-data/students.json ומחשב הקבצות אמיתיות
+    async function fetchStudents() {
+      const res = await fetch('../data/students.json', {cache: 'no-store'});
+      const data = await res.json();
+      return Array.isArray(data['תלמידים']) ? data['תלמידים'] : [];
     }
-    renderTable(groupKeys[0]);
+
+    // מיפוי הקבצות לפי config (פשטני, אפשר להרחיב)
+    function getGroupInfo(student) {
+      // דוגמה: אפשר להרחיב לפי הצורך מה-YAML
+      if(student['הקבצה'] === 'מדעית') return { group: 'מדעית', teacher: 'טל נחמיה' };
+      if(student['הקבצה'] === 'מקדמת') return { group: 'מקדמת', teacher: 'הילה הנסב' };
+      if(student['הקבצה']) return { group: student['הקבצה'], teacher: student['מורה'] || '' };
+      return { group: 'לא שובץ', teacher: '' };
+    }
+
+
+    function renderGroups(students) {
+      // הפקת קבוצות ייחודיות
+      const groupMap = {};
+      students.forEach(s => {
+        const info = getGroupInfo(s);
+        if (!groupMap[info.group]) groupMap[info.group] = { teacher: info.teacher, students: [] };
+        groupMap[info.group].students.push(s);
+      });
+      const groupKeys = Object.keys(groupMap);
+      // רינדור כפתורים
+      const groupsDiv = document.getElementById('groups');
+      groupsDiv.innerHTML = '';
+      groupKeys.forEach((g,i) => {
+        const btn = document.createElement('button');
+        btn.className = 'group-btn'+(i===0?' active':'');
+        btn.innerHTML = '<div>'+g+'</div>'+
+          '<div class="group-meta">מורה: '+groupMap[g].teacher+'</div>'+
+          '<div class="group-count">'+groupMap[g].students.length+' תלמידים</div>';
+        btn.onclick = ()=>renderTable(g, groupMap);
+        groupsDiv.appendChild(btn);
+      });
+      // ניווט
+      const navBar = document.getElementById('navBar');
+      navBar.innerHTML = '';
+      groupKeys.forEach((g,i) => {
+        const nav = document.createElement('button');
+        nav.className = 'nav-btn';
+        nav.textContent = g;
+        nav.onclick = ()=>renderTable(g, groupMap);
+        navBar.appendChild(nav);
+      });
+      renderTable(groupKeys[0], groupMap);
+    }
+
+    function renderClassTable(container, rawRows, examLabel, groupName, teacherName, gradeLabel) {
+      const coll = new Intl.Collator('he');
+      const rows = [...rawRows].sort((a,b)=> coll.compare(a.last,b.last) || coll.compare(a.first,b.first));
+      const tbody = container.querySelector('tbody');
+      tbody.innerHTML = '';
+      let sum = 0, cnt = 0;
+      rows.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        const star = r.star ? ' ⭐' : '';
+        const score = (typeof r.score === 'number') ? r.score : '';
+        if (typeof r.score === 'number') { sum += r.score; cnt++; }
+        tr.innerHTML =
+          '<td class="idx">'+(i+1)+'</td>'+
+          '<td class="last">'+(r.last||'')+star+'</td>'+
+          '<td class="first">'+(r.first||'')+'</td>'+
+          '<td class="class">'+(r.class||'לא שובצו')+'</td>'+
+          '<td class="exam">'+(examLabel||r.exam||'')+'</td>';
+        tbody.appendChild(tr);
+      });
+  container.querySelector('#total').textContent = rows.length;
+  container.querySelector('#avg').textContent = cnt ? (sum/cnt).toFixed(2) : '—';
+  // עדכון H1 ובירקרמב
+  document.getElementById('main-title').textContent = 'שכבת '+gradeLabel+' — הקבצה '+groupName+' — מורה מלמד/ת: '+teacherName;
+  document.getElementById('breadcrumb').innerHTML = '<a href="../index.html">בית</a> &rsaquo; <a href="#">שכבת '+gradeLabel+'</a> &rsaquo; <span>'+groupName+'</span>';
+    }
+
+    function renderTable(group, groupMap) {
+      document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
+      Array.from(document.getElementById('groups').children).find(b=>b.textContent.includes(group)).classList.add('active');
+      const students = groupMap[group]?.students||[];
+      const container = document.querySelector('.container');
+      const teacher = groupMap[group]?.teacher||'';
+      renderClassTable(container, students, "מבחן מיפוי דצמבר", group, teacher, 'ז');
+    }
+
+    // אתחול
+    fetchStudents().then(students => {
+      renderGroups(students);
+    });
   </script>
-</body>
-</html>
+נטליה	צ`יגירב	ז' 4	9

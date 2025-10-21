@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import * as XLSX from "xlsx";
+const fs = require("fs");
+const path = require("path");
+const XLSX = require("xlsx");
 
 const EXCEL = "שכבת ח.xlsx";
 const EXAM_TYPE = "מיפוי אוקטובר";

@@ -1,3 +1,7 @@
+.install { margin: 30px auto; text-align: center; }
+.install-btn { min-width:260px; padding:14px 22px; font-weight:700; border-radius:14px; border:0; cursor:pointer; }
+.install-btn { background: linear-gradient(135deg,#1e3a8a,#0ea5e9); color:#fff; }
+.ios-hint { opacity:.85; font-size:.95rem; margin-top:10px; }
 body {
   margin: 0;
   min-height: 100vh;

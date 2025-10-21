@@ -1,6 +1,10 @@
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#1e3a8a">
+  <link rel="icon" sizes="192x192" href="./assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="./assets/icons/icon-512.png">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ניהול תלמידים — חטיבת ביניים</title>
@@ -22,102 +26,48 @@
   </script>
 </head>
 <body>
-  <!-- רקע דקורטיבי -->
   <div class="bg">
     <div class="blob b1"></div>
     <div class="blob b2"></div>
     <div class="blob b3"></div>
   </div>
 
-  <!-- סרגל עליון -->
   <header class="topbar container">
     <div class="brand">
       <span class="logo">📚</span>
       <span class="brand-title">ניהול תלמידים</span>
-      <span class="brand-sub">חטיבת ביניים</span>
     </div>
-
     <div class="admin">
-      <button id="editBtn" class="btn btn-ghost" aria-label="עריכה">עריכה</button>
-      <small class="muted">האתר מנוהל על ידי יניב רז</small>
+      <small class="muted" style="font-size:1.1rem;font-weight:700;">האתר מנוהל ע"י יניב רז</small>
     </div>
   </header>
 
-  <!-- אזור גיבור מרכזי -->
   <main class="hero container">
-    <h1 class="hero-title">ברוכים הבאים למערכת ניהול התלמידים</h1>
-    <p class="hero-subtitle">
-      בחרו שכבה לצפייה במידע. המספרים מתעדכנים אוטומטית כשקבצי הנתונים משתנים.
-    </p>
-
-    <!-- כפתורי שכבות (Cards) -->
+    <h1 class="hero-title" style="margin-bottom:18px;">ניהול תלמידים</h1>
+    <p class="hero-subtitle" style="font-size:1.1em;color:#b9c1e6;margin-bottom:32px;">האתר מנוהל ע"י יניב רז</p>
     <section class="grid">
-      <!DOCTYPE html>
-      <html lang="he" dir="rtl">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>מרכז נתוני תלמידים</title>
-        <link rel="stylesheet" href="styles.css">
-      </head>
-      <body>
-        <main class="landing">
-          <h1>מרכז נתוני תלמידים</h1>
-          <nav>
-            <a class="grade-link" href="pages/grade7.html">שכבת ז</a>
-            <a class="grade-link" href="pages/grade8.html">שכבת ח</a>
-            <a class="grade-link" href="pages/grade9.html">שכבת ט</a>
-          </nav>
-        </main>
-      </body>
-      </html>
-      <a href="about.html" class="muted">אודות</a>
-    </nav>
-  </footer>
-    <!-- רקע דקורטיבי יוקרתי -->
-    <div class="bg">
-      <div class="blob b1"></div>
-      <div class="blob b2"></div>
-      <div class="blob b3"></div>
+      <a class="grade-card" style="min-height:220px;" href="pages/grade7.html" aria-label="שכבת ז'">
+        <div class="badge">ז׳</div>
+        <h2 style="font-size:2.2rem;">שכבת ז׳</h2>
+        <div class="cta" style="background:linear-gradient(90deg,#4ea1ff,#2679ff);font-size:1.2rem;">כניסה</div>
+      </a>
+      <a class="grade-card" style="min-height:220px;" href="pages/grade8.html" aria-label="שכבת ח'">
+        <div class="badge green">ח׳</div>
+        <h2 style="font-size:2.2rem;">שכבת ח׳</h2>
+        <div class="cta" style="background:linear-gradient(90deg,#43e97b,#ffd200);font-size:1.2rem;">כניסה</div>
+      </a>
+      <a class="grade-card" style="min-height:220px;" href="pages/grade9.html" aria-label="שכבת ט'">
+        <div class="badge orange">ט׳</div>
+        <h2 style="font-size:2.2rem;">שכבת ט׳</h2>
+        <div class="cta" style="background:linear-gradient(90deg,#ffd200,#ff4e50);font-size:1.2rem;">כניסה</div>
+      </a>
+    </section>
+    <div id="install-block" class="install">
+      <button id="installBtn" class="btn install-btn" aria-label="התקן במחשב">התקן במחשב</button>
+      <p id="iosHint" class="ios-hint" hidden>ב-iPhone/iPad: פתח ב-Safari → שתף → הוסף למסך הבית</p>
     </div>
+  </main>
 
-    <!-- סרגל עליון יוקרתי -->
-    <header class="topbar container" style="backdrop-filter: blur(8px);">
-      <div class="brand">
-        <span class="logo">📚</span>
-        <span class="brand-title">ניהול תלמידים</span>
-        <span class="brand-sub">חטיבת ביניים</span>
-      </div>
-      <div class="admin">
-        <small class="muted" style="font-size:1.1rem;font-weight:700;">האתר מנוהל ע"י יניב רז</small>
-      </div>
-    </header>
-
-    <!-- אזור גיבור מרכזי יוקרתי -->
-    <main class="hero container">
-      <h1 class="hero-title" style="margin-bottom:18px;">ברוכים הבאים למערכת ניהול התלמידים</h1>
-      <p class="hero-subtitle">בחרו שכבה לצפייה במידע. המספרים מתעדכנים אוטומטית מקבצי הנתונים.</p>
-      <section class="grid">
-        <a class="grade-card" style="min-height:220px;" href="grade7.html" aria-label="שכבת ז'">
-          <div class="badge">ז׳</div>
-          <h2 style="font-size:2.2rem;">שכבת ז׳</h2>
-          <p class="count"><span id="count7">—</span> תלמידים</p>
-          <div class="cta" style="background:linear-gradient(90deg,#4ea1ff,#2679ff);font-size:1.2rem;">כניסה</div>
-        </a>
-        <a class="grade-card" style="min-height:220px;" href="grade8.html" aria-label="שכבת ח'">
-          <div class="badge green">ח׳</div>
-          <h2 style="font-size:2.2rem;">שכבת ח׳</h2>
-          <p class="count"><span id="count8">—</span> תלמידים</p>
-          <div class="cta" style="background:linear-gradient(90deg,#35d0a0,#15a57d);font-size:1.2rem;">כניסה</div>
-        </a>
-        <a class="grade-card" style="min-height:220px;" href="grade9.html" aria-label="שכבת ט'">
-          <div class="badge amber">ט׳</div>
-          <h2 style="font-size:2.2rem;">שכבת ט׳</h2>
-          <p class="count"><span id="count9">—</span> תלמידים</p>
-          <div class="cta" style="background:linear-gradient(90deg,#ffc14d,#f39c12);font-size:1.2rem;">כניסה</div>
-        </a>
-      </section>
-    </main>
 
     <!-- סיכום כולל יוקרתי -->
     <footer class="footer container">
@@ -166,4 +116,45 @@
   <script src="script.js" defer></script>
   <!-- HMR check: modified for live reload test -->
 </body>
+  <script>
+  (function(){
+    const isDev = location.hostname.endsWith("github.dev") || location.port === "5500";
+    if ('serviceWorker' in navigator) {
+      if (isDev) { navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())); }
+      else { window.addEventListener('load', ()=>navigator.serviceWorker.register('./service-worker.js').catch(console.error)); }
+    }
+  })();
+  let deferredPrompt;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('installBtn')?.removeAttribute('disabled');
+  });
+  window.addEventListener('load', () => {
+    const installBtn = document.getElementById('installBtn');
+    const iosHint = document.getElementById('iosHint');
+    if (isStandalone) {
+      if (installBtn) { installBtn.textContent = 'מותקן ✔'; installBtn.disabled = true; }
+      return;
+    }
+    if (isIOS) {
+      if (iosHint) iosHint.hidden = false;
+    }
+    if (installBtn) {
+      if (!deferredPrompt && !isIOS) installBtn.setAttribute('disabled','');
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if (outcome === 'accepted') {
+          installBtn.textContent = 'מותקן ✔';
+          installBtn.disabled = true;
+        }
+      });
+    }
+  });
+  </script>
 </html>
