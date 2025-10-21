@@ -1,13 +1,9 @@
 {
   "name": "student-data-hub",
   "type": "module",
-  "dependencies": {
-    "xlsx": "^0.18.5"
-  }
-}
-{
-  "name": "student-data-hub",
-  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5173"
+  },
   "dependencies": {
     "xlsx": "^0.18.5",
     "js-yaml": "^4.1.0"
