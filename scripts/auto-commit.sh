@@ -9,7 +9,7 @@ while inotifywait -r -e modify,create,delete,move --exclude '(\.git|node_modules
     git commit -m "$MSG" || true
     git push origin main || true
     echo "$(date -Is) | $MSG" >> logs/auto-commit.log
-    # עדכן README בתיעוד קצר
+    # עדכון README בתיעוד קצר
     echo "📊 עדכון אוטומטי: $(date +'%Y-%m-%d %H:%M:%S')" >> README.md
     git add README.md && git commit -m "🧾 Update README timestamp" || true
     git push origin main || true
