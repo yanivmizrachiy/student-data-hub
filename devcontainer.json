@@ -1,0 +1,13 @@
+{
+  "name": "student-data-hub-devcontainer",
+  "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": { "label": "Student Data Hub", "onAutoForward": "openPreview" }
+  },
+  "postStartCommand": "npm install && (npm run dev &)",
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  }
+}

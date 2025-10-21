@@ -1,4 +1,15 @@
 {
+  "remote.autoForwardPorts": true,
+  "remote.portAttributes": {
+    "5173": { "label": "Student Data Hub", "onAutoForward": "openPreview" }
+  },
+  "workbench.editor.enablePreview": false,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 700,
+  "editor.formatOnSave": true,
+  "simpleBrowser.openExternalOnForward": true
+}
+{
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 800,
   "editor.formatOnSave": true
