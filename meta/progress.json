@@ -1,0 +1,10 @@
+{
+  "steps": [
+    {
+      "id": 1,
+      "title": "הגדרת Live Preview (HMR) עם Vite",
+      "status": "completed",
+      "details": "נוצר vite.config.js, עודכן package.json, הותקן Vite."
+    }
+  ],
+  "lastUpdate": "

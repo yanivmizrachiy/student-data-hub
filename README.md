@@ -1,3 +1,21 @@
+# student-data-hub
+
+## Live Preview (HMR) עם Vite
+
+להרצת Live Preview עם HMR:
+
+```bash
+npm run dev
+```
+
+המערכת תעלה על פורט 5173 ותבצע רענון אוטומטי לכל שינוי בקבצי הפרונט.
+
+### קבצים רלוונטיים:
+- vite.config.js
+- package.json (סקריפט dev)
+
+### סטטוס:
+שלב 1 (הגדרת Live Preview) הושלם.
 [![Live Preview SelfTest](https://img.shields.io/github/actions/workflow/status/${{ github.repository }}/livepreview-selftest.yml?label=Live%20Preview%20SelfTest)](../../actions/workflows/livepreview-selftest.yml)
 
 # עמוד כניסה — ניהול תלמידים
