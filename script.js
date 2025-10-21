@@ -1,6 +1,203 @@
-if(window.__APP_INIT__){throw new Error('__APP_INIT__ duplicate')}window.__APP_INIT__=true;document.addEventListener('DOMContentLoaded',init,{once:true});
-// מאזין לטעינה ומפעיל את כל הלוגיקה
-window.addEventListener('load', () => {
+
+// Guard נגד רינדור כפול
+if (window.__APP_MOUNTED__) {
+  throw new Error('Script loaded twice – aborting second init');
+}
+window.__APP_MOUNTED__ = true;
+
+function init() {
+  // ========================
+  // טיוב קוד: טעינת נתונים אמיתיים
+  // ========================
+  const gradeFiles = {
+    Z: `מאור	מזרחי	ז’1	100
+אדל	פאילייב	ז' 1	100
+טליה	ברימט	ז' 1	99
+דניאל	ברקוביץ	ז' 1	99
+שיר	זכריה	ז' 1	98
+מאיה	חודורוב	ז' 1	98
+סופיה ניצה	שוורצר	ז' 1	98
+מעיין	עמדי	ז' 1	97
+אריאל	פינקס	ז' 1	97
+יעל	שצמן	ז' 1	97
+עדי	באנון	ז' 3	96
+נועה	מכחל	ז' 1	95
+דניאלה	מוגס	ז' 1	94
+אוריה	סיאנוב	ז' 1	93
+אופק	כהן	ז' 1	92
+נתנאל	מלניק	ז' 1	89
+יהלי	ציקווש	ז' 1	89
+אופיר חיים	אופק	ז' 4	89
+ליהי	אוסקר	ז' 1	88
+אוריה אברהם	ששון	ז' 1	88
+לירן	אזולאי	ז' 1	87
+בנימין	דהן	ז' 1	87
+עילי	שוורץ	ז' 1	87
+דניאל	כהן נחמו	ז' 4	87
+עידן ישראל	אמויאל	ז' 3	85
+נתנאל	ירמיהו	ז' 3	85
+אייל	רחמים	ז' 3	85
+אריאל	בן כליפה	ז' 4	82
+אושרי	גבאי	ז' 4	82
+עילאי	לוי אילוז	ז’2	81
+דוד	סולטן	ז' 4	80
+טאמנסאו	סנבטו	ז' 3	80
+רבקה	קוסשוילי	ז' 3	80
+נהוראי שלמה	ששון	ז' 4	79
+נווה	אסיאג	ז' 4	77
+ניר	שכטמן	ז' 1	76
+סתיו	מזרחי	ז' 3	76
+גבריאל	אלישקובי	ז' 3	74
+אלרואי משה	גידניאן	ז' 4	74
+גיא	כהן	ז' 4	71
+ירין	גיא	ז' 4	69
+ארטיום	חקימוב	ז' 3	69
+עדי	באנון	ז' 3	68
+אגם	כהן	ז' 4	68
+אלין	בנישו	ז' 3	66
+ליאם ציון	פרטוק	ז’2	65
+ליאו	בנד	ז’2	61
+ליעד מאיר	בר	ז’2	56
+אייל	דוידוב	ז’2	56
+אסף	דאבוש	ז' 3	55
+שי	קידן	ז’2	55
+ליאן	אגמי	ז' 3	53
+אורי	מטר	ז’3	53
+ירין עמרם	בן חמו	ז' 3	52
+יהלי	ארגאו	ז' 3	51
+אושר	בן מיכאל	ז' 3	51
+ליאן	מזרחי	ז' 4	51
+ליאן	אלמליח	ז' 4	49
+נועם	אליאב	ז’2	48
+אליה	מנזור	ז’2	46
+אושרי	הולנדר	ז' 4	45
+גלי	בן חיים	ז’2	45
+לייה	מזרחי	ז' 4	43
+מאור	בביוב	ז’2	41
+ליה	חפצדי	ז’2	40
+מאור	אדרי	ז' 4	39
+בת אל	האילו	ז' 4	37
+אושר עזרא	מזרחי	ז’2	30
+אורי שמעון	צרפי	ז’2	17
+הודיה	טל-שיר	ז’2	15
+נטליה	צ'יגירב	ז' 4	9
+עדינה	רזייב	ז' 1	
+אמילי	שמש	ז' 1	
+נטע	איסיאס	ז' 3	` ,
+    H: `אלירן שם טוב	59
+אופיר עובדיה	72
+אלירן ארגאו	74
+איתי בן דוד	64
+מילאן חנניה	76
+אורי אזולאי	90
+אדל אמין זאדה	61
+וזה קרטבלשווילי	67
+יפת פוסטרלוב	78
+קליקידן צ'קול	78
+נועם חיים כהן	85
+מאור עבו	76
+אתגר זקין	93
+יובל ראובני	88
+ליאן חפצדי	56
+נוי אבוקסיס	100
+אליה שמש	50
+אופיר מעלומי	53
+טליה עמר	78
+מישל יזרעאלוב	69
+איתי שרביט	50
+רומי סולומון	88
+עמית יוסף	73
+איתי רומי	74
+` ,
+    T: '' // אין קובץ ט' כרגע
+  };
+  function countStudents(raw, sep='\t') {
+    if (!raw) return 0;
+    return raw.trim().split(/\n/).filter(line => line.trim() && line.split(sep)[0]).length;
+  }
+
+  /* Landing interactions + counts loading */
+  const ADMIN_CODE = "maya1167";
+
+  const qs = (s, r = document) => r.querySelector(s);
+  const countsEls = {
+    g7: qs("#count7"),
+    g8: qs("#count8"),
+    g9: qs("#count9"),
+    total: qs("#totalCount")
+  };
+
+  /* 1) אימות מנהל */
+  const editBtn = qs("#editBtn");
+  const dlg = qs("#adminDialog");
+  const codeInput = qs("#adminCode");
+  const err = qs("#adminError");
+  const cancelBtn = qs("#cancelAdmin");
+
+  editBtn?.addEventListener("click", () => {
+    err.hidden = true;
+    dlg.showModal();
+    setTimeout(() => codeInput.focus(), 50);
+  });
+
+  cancelBtn?.addEventListener("click", () => dlg.close());
+
+  qs("#adminForm")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ok = codeInput.value.trim() === ADMIN_CODE;
+    if (!ok) {
+      err.hidden = false;
+      codeInput.select();
+      return;
+    }
+    dlg.close();
+    // הפניה למסך הניהול
+    window.location.href = "admin.html";
+  });
+
+  /* 2) טעינת מוני תלמידים
+     – עובד אוטומטית אם קיים /data/counts.json 
+     – אחרת יש “פולבק” לערכים מקומיים.
+     מבנה counts.json:
+     {
+       "grade7": 0,
+       "grade8": 0,
+       "grade9": 0,
+       "total": 0
+     }
+  */
+  async function loadCounts() {
+    const fallback = { grade7: "—", grade8: "—", grade9: "—", total: "—" };
+
+    try {
+      const res = await fetch("./data/counts.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("no counts.json yet");
+      const data = await res.json();
+
+      const g7 = Number(data.grade7 ?? 0);
+      const g8 = Number(data.grade8 ?? 0);
+      const g9 = Number(data.grade9 ?? 0);
+      const total = Number(data.total ?? (g7 + g8 + g9)) || "—";
+
+      countsEls.g7.textContent = g7 || "—";
+      countsEls.g8.textContent = g8 || "—";
+      countsEls.g9.textContent = g9 || "—";
+      countsEls.total.textContent = total;
+
+    } catch (_e) {
+      // פולבק — ניתן לעדכן ידנית פה אם תרצה מספרי ברירת מחדל:
+      countsEls.g7.textContent = fallback.grade7;
+      countsEls.g8.textContent = fallback.grade8;
+      countsEls.g9.textContent = fallback.grade9;
+      countsEls.total.textContent = fallback.total;
+    }
+  }
+
+  loadCounts();
+
+  // ========================
+  // כל הלוגיקה של דף הבית, טבלאות, חיפוש, שיתוף וכו'
+  // ========================
   // אלמנטים מרכזיים
   const body = document.body;
   const desktopBtn = document.getElementById('desktopViewBtn');
@@ -16,18 +213,17 @@ window.addEventListener('load', () => {
   function setDesktopView(){
     body.classList.remove('mobile-view');
     body.classList.add('desktop-view');
-    desktopBtn.classList.add('primary');
-    mobileBtn.classList.remove('primary');
+    desktopBtn?.classList.add('primary');
+    mobileBtn?.classList.remove('primary');
   }
   function setMobileView(){
     body.classList.remove('desktop-view');
     body.classList.add('mobile-view');
-    mobileBtn.classList.add('primary');
-    desktopBtn.classList.remove('primary');
+    mobileBtn?.classList.add('primary');
+    desktopBtn?.classList.remove('primary');
   }
-
-  desktopBtn.addEventListener('click', setDesktopView);
-  mobileBtn.addEventListener('click', setMobileView);
+  desktopBtn?.addEventListener('click', setDesktopView);
+  mobileBtn?.addEventListener('click', setMobileView);
 
   // מערך דמו של 6 תלמידים (פיקטיבי) - אין כאן מידע אמיתי
   const students = [
@@ -43,7 +239,6 @@ window.addEventListener('load', () => {
   function buildRow(student){
     const tr = document.createElement('tr');
     tr.dataset.id = student.id;
-
     // עמודת בחירה
     const tdSelect = document.createElement('td');
     tdSelect.className = 'select-col';
@@ -53,9 +248,7 @@ window.addEventListener('load', () => {
     chk.dataset.id = student.id;
     tdSelect.appendChild(chk);
     tr.appendChild(tdSelect);
-
     const addCell = (text) => { const td = document.createElement('td'); td.textContent = text; return td; };
-
     tr.appendChild(addCell(student.first));
     tr.appendChild(addCell(student.last));
     tr.appendChild(addCell(student.klass));
@@ -65,7 +258,6 @@ window.addEventListener('load', () => {
     tr.appendChild(addCell(student.gradeName));
     tr.appendChild(addCell(student.grade));
     tr.appendChild(addCell(student.notes));
-
     return tr;
   }
 
@@ -147,105 +339,11 @@ window.addEventListener('load', () => {
   renderTable();
   // סיבוב תחילי לפי מחלקת body הנוכחית
   if(body.classList.contains('mobile-view')){ setMobileView(); } else { setDesktopView(); }
-});
-
-// ========================
-// טיוב קוד: טעינת נתונים אמיתיים
-// ========================
-const gradeFiles = {
-  Z: `מאור\tמזרחי\tז’1\t100\nאדל\tפאילייב\tז' 1\t100\nטליה\tברימט\tז' 1\t99\nדניאל\tברקוביץ\tז' 1\t99\nשיר\tזכריה\tז' 1\t98\nמאיה\tחודורוב\tז' 1\t98\nסופיה ניצה\tשוורצר\tז' 1\t98\nמעיין\tעמדי\tז' 1\t97\nאריאל\tפינקס\tז' 1\t97\nיעל\tשצמן\tז' 1\t97\nעדי\tבאנון\tז' 3\t96\nנועה\tמכחל\tז' 1\t95\nדניאלה\tמוגס\tז' 1\t94\nאוריה\tסיאנוב\tז' 1\t93\nאופק\tכהן\tז' 1\t92\nנתנאל\tמלניק\tז' 1\t89\nיהלי\tציקווש\tז' 1\t89\nאופיר חיים\tאופק\tז' 4\t89\nליהי\tאוסקר\tז' 1\t88\nאוריה אברהם\tששון\tז' 1\t88\nלירן\tאזולאי\tז' 1\t87\nבנימין\tדהן\tז' 1\t87\nעילי\tשוורץ\tז' 1\t87\nדניאל\tכהן נחמו\tז' 4\t87\nעידן ישראל\tאמויאל\tז' 3\t85\nנתנאל\tירמיהו\tז' 3\t85\nאייל\tרחמים\tז' 3\t85\nאריאל\tבן כליפה\tז' 4\t82\nאושרי\tגבאי\tז' 4\t82\nעילאי\tלוי אילוז\tז’2\t81\nדוד\tסולטן\tז' 4\t80\nטאמנסאו\tסנבטו\tז' 3\t80\nרבקה\tקוסשוילי\tז' 3\t80\nנהוראי שלמה\tששון\tז' 4\t79\nנווה\tאסיאג\tז' 4\t77\nניר\tשכטמן\tז' 1\t76\nסתיו\tמזרחי\tז' 3\t76\nגבריאל\tאלישקובי\tז' 3\t74\nאלרואי משה\tגידניאן\tז' 4\t74\nגיא\tכהן\tז' 4\t71\nירין\tגיא\tז' 4\t69\nארטיום\tחקימוב\tז' 3\t69\nעדי\tבאנון\tז' 3\t68\nאגם\tכהן\tז' 4\t68\nאלין\tבנישו\tז' 3\t66\nליאם ציון\tפרטוק\tז’2\t65\nליאו\tבנד\tז’2\t61\nליעד מאיר\tבר\tז’2\t56\nאייל\tדוידוב\tז’2\t56\nאסף\tדאבוש\tז' 3\t55\nשי\tקידן\tז’2\t55\nליאן\tאגמי\tז' 3\t53\nאורי\tמטר\tז’3\t53\nירין עמרם\tבן חמו\tז' 3\t52\nיהלי\tארגאו\tז' 3\t51\nאושר\tבן מיכאל\tז' 3\t51\nליאן\tמזרחי\tז' 4\t51\nליאן\tאלמליח\tז' 4\t49\nנועם\tאליאב\tז’2\t48\nאליה\tמנזור\tז’2\t46\nאושרי\tהולנדר\tז' 4\t45\nגלי\tבן חיים\tז’2\t45\nלייה\tמזרחי\tז' 4\t43\nמאור\tבביוב\tז’2\t41\nליה\tחפצדי\tז’2\t40\nמאור\tאדרי\tז' 4\t39\nבת אל\tהאילו\tז' 4\t37\nאושר עזרא\tמזרחי\tז’2\t30\nאורי שמעון\tצרפי\tז’2\t17\nהודיה\tטל-שיר\tז’2\t15\nנטליה\tצ'יגירב\tז' 4\t9\nעדינה\tרזייב\tז' 1\t\nאמילי\tשמש\tז' 1\t\nנטע\tאיסיאס\tז' 3\t` ,
-  H: `אלירן שם טוב\t59\nאופיר עובדיה\t72\nאלירן ארגאו\t74\nאיתי בן דוד\t64\nמילאן חנניה\t76\nאורי אזולאי\t90\nאדל אמין זאדה\t61\nוזה קרטבלשווילי\t67\nיפת פוסטרלוב\t78\nקליקידן צ'קול\t78\nנועם חיים כהן\t85\nמאור עבו\t76\nאתגר זקין\t93\nיובל ראובני\t88\nליאן חפצדי\t56\nנוי אבוקסיס\t100\nאליה שמש\t50\nאופיר מעלומי\t53\nטליה עמר\t78\nמישל יזרעאלוב\t69\nאיתי שרביט\t50\nרומי סולומון\t88\nעמית יוסף\t73\nאיתי רומי\t74\n` ,
-  T: '' // אין קובץ ט' כרגע
-};
-
-function countStudents(raw, sep='\t') {
-  if (!raw) return 0;
-  return raw.trim().split(/\n/).filter(line => line.trim() && line.split(sep)[0]).length;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('countZ').textContent = countStudents(gradeFiles.Z);
-  document.getElementById('countH').textContent = countStudents(gradeFiles.H);
-  document.getElementById('countT').textContent = countStudents(gradeFiles.T);
-  document.getElementById('countTotal').textContent =
-    countStudents(gradeFiles.Z) + countStudents(gradeFiles.H) + countStudents(gradeFiles.T);
-});
-
-/* Landing interactions + counts loading */
-const ADMIN_CODE = "maya1167";
-
-const qs = (s, r = document) => r.querySelector(s);
-const countsEls = {
-  g7: qs("#count7"),
-  g8: qs("#count8"),
-  g9: qs("#count9"),
-  total: qs("#totalCount")
-};
-
-/* 1) אימות מנהל */
-const editBtn = qs("#editBtn");
-const dlg = qs("#adminDialog");
-const codeInput = qs("#adminCode");
-const err = qs("#adminError");
-const cancelBtn = qs("#cancelAdmin");
-
-editBtn?.addEventListener("click", () => {
-  err.hidden = true;
-  dlg.showModal();
-  setTimeout(() => codeInput.focus(), 50);
-});
-
-cancelBtn?.addEventListener("click", () => dlg.close());
-
-qs("#adminForm")?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const ok = codeInput.value.trim() === ADMIN_CODE;
-  if (!ok) {
-    err.hidden = false;
-    codeInput.select();
-    return;
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.__INIT_DONE__) {
+    window.__INIT_DONE__ = true;
+    init();
   }
-  dlg.close();
-  // הפניה למסך הניהול
-  window.location.href = "admin.html";
 });
-
-/* 2) טעינת מוני תלמידים
-   – עובד אוטומטית אם קיים /data/counts.json 
-   – אחרת יש “פולבק” לערכים מקומיים.
-   מבנה counts.json:
-   {
-     "grade7": 0,
-     "grade8": 0,
-     "grade9": 0,
-     "total": 0
-   }
-*/
-async function loadCounts() {
-  const fallback = { grade7: "—", grade8: "—", grade9: "—", total: "—" };
-
-  try {
-    const res = await fetch("./data/counts.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("no counts.json yet");
-    const data = await res.json();
-
-    const g7 = Number(data.grade7 ?? 0);
-    const g8 = Number(data.grade8 ?? 0);
-    const g9 = Number(data.grade9 ?? 0);
-    const total = Number(data.total ?? (g7 + g8 + g9)) || "—";
-
-    countsEls.g7.textContent = g7 || "—";
-    countsEls.g8.textContent = g8 || "—";
-    countsEls.g9.textContent = g9 || "—";
-    countsEls.total.textContent = total;
-
-  } catch (_e) {
-    // פולבק — ניתן לעדכן ידנית פה אם תרצה מספרי ברירת מחדל:
-    countsEls.g7.textContent = fallback.grade7;
-    countsEls.g8.textContent = fallback.grade8;
-    countsEls.g9.textContent = fallback.grade9;
-    countsEls.total.textContent = fallback.total;
-  }
-}
-
-loadCounts();

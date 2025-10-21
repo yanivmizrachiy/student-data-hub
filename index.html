@@ -3,75 +3,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ניהול תלמידים — חטיבת ביניים</title>
-
-  <!-- פונט עברי נקי -->
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800&display=swap" rel="stylesheet" />
-
-  <!-- עיצוב מותאם -->
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- צבע לדפדפנים ניידים -->
-  <meta name="theme-color" content="#0e1f40" />
-
-  <script>
-    // Redirect to GitHub Pages if running on localhost
-    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-      location.replace('https://yanivmizrachiy.github.io/student-data-hub/');
-    }
-  </script>
-</head>
-<body>
-  <!-- רקע דקורטיבי -->
-  <div class="bg">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
-  </div>
-
   <!-- סרגל עליון -->
-  <header class="topbar container">
+  <header class="topbar container" style="backdrop-filter: blur(8px);">
     <div class="brand">
       <span class="logo">📚</span>
       <span class="brand-title">ניהול תלמידים</span>
       <span class="brand-sub">חטיבת ביניים</span>
     </div>
-
     <div class="admin">
       <button id="editBtn" class="btn btn-ghost" aria-label="עריכה">עריכה</button>
-      <small class="muted">האתר מנוהל על ידי יניב רז</small>
+      <small class="muted" style="font-size:1.1rem;font-weight:700;">האתר מנוהל ע"י יניב רז</small>
     </div>
   </header>
 
   <!-- אזור גיבור מרכזי -->
   <main class="hero container">
-    <h1 class="hero-title">ברוכים הבאים למערכת ניהול התלמידים</h1>
-    <p class="hero-subtitle">
-      בחרו שכבה לצפייה במידע. המספרים מתעדכנים אוטומטית כשקבצי הנתונים משתנים.
-    </p>
-
-    <!-- כפתורי שכבות (Cards) -->
+    <h1 class="hero-title" style="margin-bottom:18px;">ברוכים הבאים למערכת ניהול התלמידים</h1>
+    <p class="hero-subtitle">בחרו שכבה לצפייה במידע. המספרים מתעדכנים אוטומטית מקבצי הנתונים.</p>
     <section class="grid">
-      <!-- שכבת ז -->
-      <a class="grade-card" href="grade7.html" aria-label="שכבת ז'">
+      <a class="grade-card" style="min-height:220px;" href="grade7.html" aria-label="שכבת ז'">
         <div class="badge">ז׳</div>
-        <h2>שכבת ז׳</h2>
+        <h2 style="font-size:2.2rem;">שכבת ז׳</h2>
         <p class="count"><span id="count7">—</span> תלמידים</p>
         <div class="cta">כניסה</div>
       </a>
-
-      <!-- שכבת ח -->
-      <a class="grade-card" href="grade8.html" aria-label="שכבת ח'">
+      <a class="grade-card" style="min-height:220px;" href="grade8.html" aria-label="שכבת ח'">
         <div class="badge green">ח׳</div>
-        <h2>שכבת ח׳</h2>
+        <h2 style="font-size:2.2rem;">שכבת ח׳</h2>
         <p class="count"><span id="count8">—</span> תלמידים</p>
         <div class="cta">כניסה</div>
       </a>
-
-      <!-- שכבת ט -->
-      <a class="grade-card" href="grade9.html" aria-label="שכבת ט'">
+      <a class="grade-card" style="min-height:220px;" href="grade9.html" aria-label="שכבת ט'">
         <div class="badge amber">ט׳</div>
-        <h2>שכבת ט׳</h2>
+        <h2 style="font-size:2.2rem;">שכבת ט׳</h2>
         <p class="count"><span id="count9">—</span> תלמידים</p>
         <div class="cta">כניסה</div>
       </a>
@@ -90,24 +54,6 @@
       <a href="about.html" class="muted">אודות</a>
     </nav>
   </footer>
-    <!-- רקע דקורטיבי יוקרתי -->
-    <div class="bg">
-      <div class="blob b1"></div>
-      <div class="blob b2"></div>
-      <div class="blob b3"></div>
-    </div>
-
-    <!-- סרגל עליון יוקרתי -->
-    <header class="topbar container" style="backdrop-filter: blur(8px);">
-      <div class="brand">
-        <span class="logo">📚</span>
-        <span class="brand-title">ניהול תלמידים</span>
-        <span class="brand-sub">חטיבת ביניים</span>
-      </div>
-      <div class="admin">
-        <small class="muted" style="font-size:1.1rem;font-weight:700;">האתר מנוהל ע"י יניב רז</small>
-      </div>
-    </header>
 
     <!-- אזור גיבור מרכזי יוקרתי -->
     <main class="hero container">
@@ -180,6 +126,5 @@
       }).catch(()=>{});
   </script>
   <script src="script.js" defer></script>
-  <!-- HMR check: modified for live reload test -->
 </body>
 </html>
