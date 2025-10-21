@@ -1,0 +1,33 @@
+grades:
+  - key: "ז"
+    excel: "שכבת ז.xlsx"
+    rules: []
+  - key: "ח"
+    excel: "שכבת ח.xlsx"
+    rules: []
+  - key: "ט"
+    excel: "שכבת ט.xlsx"
+    rules: []
+overrides:
+  students:
+    - name: "מיכל רחמים"
+      grade: "ט"
+      teacher: "יניב רז"
+      track: "מדעית"
+      group: "מדעית"
+    - name: "אדווה חיימי"
+      grade: "ט"
+      teacher: "יניב רז"
+      track: "מדעית"
+      group: "מדעית"
+    - name: "דניס"
+      grade: "ט"
+      class_hint: "ט4"
+      teacher: "יניב רז"
+      track: "מדעית"
+      group: "מדעית"
+    - name: "עילאי"
+      grade: "ז"
+      class_hint: "ז2"
+      teacher: "יניב רז"
+      group: "א1"

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>משימות/מבחנים — grades-app</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <h1>משימות / מבחנים</h1>
+      <nav style="display:flex;gap:8px;">
+        <button onclick="toPage(1)" class="btn grade-7">ז</button>
+        <button onclick="toPage(2)" class="btn grade-8">ח</button>
+        <button onclick="toPage(3)" class="btn grade-9">ט</button>
+        <button onclick="toPage(0)" class="btn">לוח בקרה</button>
+        <button onclick="toPage(4)" class="btn">משימות</button>
+        <button onclick="toPage(5)" class="btn">יומן ציונים</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="controls">
+      <button id="newAssignBtn" class="btn">צור משימה חדשה</button>
+    </section>
+
+    <section id="assignmentsList">
+      <!-- רשימת משימות תיטען מ-IndexedDB -->
+    </section>
+  </main>
+
+  <script src="/assets/js/db.js" defer></script>
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

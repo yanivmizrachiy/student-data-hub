@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ייבוא/ייצוא — grades-app</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <h1>ייבוא / ייצוא</h1>
+      <nav>
+        <button onclick="toPage(1)" class="btn">לוח בקרה</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="importSection">
+      <h2>ייבוא קבצי CSV</h2>
+      <input id="csvFiles" type="file" accept=".csv" multiple />
+      <div id="importReport"></div>
+      <button id="doImport" class="btn">ייבא ושמור</button>
+    </section>
+
+    <section id="exportSection">
+      <h2>ייצוא</h2>
+      <select id="exportClassSelect"><option value="">כל הכיתות</option></select>
+      <button id="exportCsvBtn" class="btn">ייצא CSV</button>
+      <button id="exportJsonBtn" class="btn">ייצא JSON</button>
+    </section>
+  </main>
+
+  <script src="/assets/js/db.js" defer></script>
+  <script src="/assets/js/importer.js" defer></script>
+  <script src="/assets/js/exporter.js" defer></script>
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

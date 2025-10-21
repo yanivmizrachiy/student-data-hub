@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>כיתה ז — תלמידים</title>
+  <link rel="stylesheet" href="/assets/css/theme.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <h1>כיתה ז</h1>
+      <nav style="display:flex;gap:8px;">
+        <button onclick="toPage(1)" class="btn grade-7 active">ז</button>
+        <button onclick="toPage(2)" class="btn grade-8">ח</button>
+        <button onclick="toPage(3)" class="btn grade-9">ט</button>
+        <button onclick="toPage(0)" class="btn">לוח בקרה</button>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <section>
+      <h2>רשימת תלמידי כיתה ז</h2>
+      <div id="students-table"></div>
+      <div id="summary"></div>
+    </section>
+  </main>
+  <script type="module">
+    import students from '/data/students_full.json' assert {type: 'json'};
+    const zStudents = students.students.filter(s => s.grade === 'ז');
+    const table = document.createElement('table');
+    table.innerHTML = `<thead><tr><th>שם פרטי</th><th>שם משפחה</th><th>כיתה</th><th>קבוצה</th></tr></thead>` +
+      '<tbody>' + zStudents.map(s => `<tr><td>${s.first}</td><td>${s.last}</td><td>${s.class}</td><td>${s.group}</td></tr>`).join('') + '</tbody>';
+    document.getElementById('students-table').appendChild(table);
+    document.getElementById('summary').textContent = `סה"כ תלמידים: ${zStudents.length}`;
+  </script>
+</body>
+</html>

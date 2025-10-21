@@ -1,0 +1,12 @@
+grade: "ח"
+authority_excel: "שכבת ח.xlsx"
+rules:
+  - match:
+      class_equals: "ח1"
+    assign:
+      track: "מדעית ח1"
+      group: "מדעית"
+      teacher: "יניב רז"
+
+overrides:
+  students: []

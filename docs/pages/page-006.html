@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>פרופיל תלמיד — grades-app</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-inner">
+      <h1>פרופיל תלמיד</h1>
+      <nav>
+        <button onclick="toPage(3)" class="btn">תלמידים</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="studentProfile">
+      <!-- פרטי תלמיד, גרף התקדמות, טבלת ציונים -->
+      <div class="profile-top">
+        <h2 id="studentName">שם התלמיד</h2>
+        <div class="profile-actions">
+          <button id="waShareBtn" class="btn">🟢 שליחה בוואטסאפ</button>
+          <button id="mailShareBtn" class="btn">✉ שליחה במייל</button>
+          <button id="pdfExportBtn" class="btn">🧾 הורדת PDF</button>
+        </div>
+      </div>
+
+      <div id="studentGrades"></div>
+    </section>
+  </main>
+
+  <script src="/assets/js/db.js" defer></script>
+  <script src="/assets/js/exporter.js" defer></script>
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

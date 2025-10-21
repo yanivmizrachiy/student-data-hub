@@ -1,0 +1,34 @@
+grade: "ז"
+authority_excel: "שכבת ז.xlsx"
+rules:
+  - match:
+      class_equals: "ז1"
+      tag_contains: ["מדעית", "מדעי", "מדעית ז1"]
+    assign:
+      track: "מדעית ז1"
+      group: "מדעית"
+      teacher: "טל נחמיה"
+
+  - match:
+      class_equals: "ז2"
+      tag_contains: ["מקדמת", "כיתה מקדמת", "ז2 מקדמת"]
+    assign:
+      track: "מקדמת ז2"
+      group: "מקדמת"
+      teacher: "הילה הנסב"
+
+
+  - match:
+      any: true
+    assign:
+      track: "הקבצה א1"
+      group: "א1"
+      teacher: "יניב רז"
+
+overrides:
+  # דוגמא: תלמידים שהוגדרו להקבצה א עם אילנית רז
+  # - name: "שם מלא מדויק מהאקסל"
+  #   class: "ז1"
+  #   track: "הקבצה א"
+  #   teacher: "אילנית רז"
+  #   group: "א"

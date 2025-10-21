@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>שכבה — כיתות</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+  <style>
+    .class-card{background:var(--card);padding:12px;border-radius:10px;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <div class="container header-inner">
+        <h1 id="pageTitle">כיתות</h1>
+        <nav style="display:flex;gap:8px;">
+          <button onclick="toPage(1)" class="btn grade-7">ז</button>
+          <button onclick="toPage(2)" class="btn grade-8">ח</button>
+          <button onclick="toPage(3)" class="btn grade-9">ט</button>
+          <button onclick="toPage(0)" class="btn">לוח בקרה</button>
+          <button onclick="toPage(4)" class="btn">משימות</button>
+          <button onclick="toPage(5)" class="btn">יומן ציונים</button>
+        </nav>
+        <div class="small-note">מנוהל על ידי יניב רז</div>
+      </div>
+    </header>
+
+    <section class="controls">
+      <div>הצג שכבה: <strong id="gradeLabel">כל השכבות</strong></div>
+    </section>
+
+    <section id="classesList">
+      <!-- יופיעו כרטיסים של כיתות והקבצות לפי /data-samples/tracks.csv -->
+    </section>
+  </main>
+
+  <script src="/assets/js/db.js" defer></script>
+  <script type="module" src="/assets/js/app.js"></script>
+  <script>
+    (async function(){
+      const params = new URLSearchParams(location.search);
+      const grade = params.get('grade') || '';
+      const gradeLabel = document.getElementById('gradeLabel');
+      gradeLabel.textContent = grade || 'כל השכבות';
+
+      const rows = await window.loadTracksCsv();
+      // rows contain student_id,assignment_id,grade,submitted or other columns; we will derive classes from student entries if present
+      // attempt to load students.csv to map class_ids
+      let students = [];
+      try{
+        const resp = await fetch('/data-samples/students.csv');
+        if(resp.ok){
+          const text = await resp.text();
+          const lines = text.split(/\r?\n/).filter(l=>l.trim());
+          const headers = lines.shift().split(',').map(h=>h.trim());
+          students = lines.map(l=>{
+            const cols = l.split(',').map(c=>c.trim());
+            const obj = {}; headers.forEach((h,i)=>obj[h]=cols[i]||''); return obj;
+          });
+        }
+      }catch(e){ console.warn('students.csv not available'); }
+
+      // collect classes and counts
+      const classes = {};
+      for(const s of students){
+        if(grade && !s.class_id.startsWith(grade)) continue;
+        const cid = s.class_id || 'לא ידוע';
+        classes[cid] = classes[cid] || {count:0, students:[]};
+        classes[cid].count++;
+        classes[cid].students.push(s);
+      }
+
+      const container = document.getElementById('classesList');
+      if(Object.keys(classes).length===0){ container.innerHTML = '<div>לא נמצאו כיתות</div>'; return; }
+      for(const cid of Object.keys(classes)){
+        const el = document.createElement('div'); el.className='class-card';
+        // כפתור יומן ציונים חדש - מבקש מהמשתמש path מדויק לקובץ CSV ומנווט לעמוד היומן
+        const journalBtn = `<button class='btn' onclick="(function(){const p=prompt('הדבק את ה-path המדויק ל-CSV הרשמי (ללא דמו):'); if(p){ location.href='/pages/page-005.html?csv='+encodeURIComponent(p)+'&title='+encodeURIComponent('יומן ציונים – ${cid}'); } })()">יומן ציונים</button>`;
+        el.innerHTML = `<div><strong>${cid}</strong> — תלמידים: ${classes[cid].count}</div><div style="margin-top:8px">${journalBtn} <button class='btn' onclick="location.href='/pages/page-003.html?class_id=${encodeURIComponent(cid)}'">תלמידים</button></div>`;
+        container.appendChild(el);
+      }
+    })();
+  </script>
+</body>
+</html>

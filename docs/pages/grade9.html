@@ -1,0 +1,115 @@
+<!doctype html><meta charset="utf-8"><title>grade9</title>
+<body dir="rtl" style="font-family:Heebo;background:#0b3a82;color:#eaf3ff;padding:20px">
+<h2>עמוד: grade9</h2>
+<a href="../index.html" style="color:#fff">← חזרה לעמוד הראשי</a>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>שכבת ט׳ – תלמידים והקבצות</title>
+	<link rel="stylesheet" href="../assets/css/theme.css">
+	<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		body{background:linear-gradient(120deg,#0b3a82,#0f56c4 80%);color:#eaf3ff;font-family:Heebo,Arial,sans-serif;margin:0;min-height:100vh;}
+		.container{max-width:1100px;margin:32px auto;padding:0 16px;}
+		h1{font-size:2.2rem;font-weight:900;margin:0 0 18px;letter-spacing:.5px;text-shadow:0 2px 8px #0002;}
+		.groups{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+		.group-btn{background:rgba(255,255,255,.12);border:2px solid #fff2;border-radius:14px;padding:16px 28px;font-size:1.15rem;font-weight:700;color:#fff;cursor:pointer;transition:.2s;box-shadow:0 2px 8px #0001;min-width:170px;display:flex;flex-direction:column;align-items:center;}
+		.group-btn.active,.group-btn:focus{background:#fff;color:#0b3a82;outline:none}
+		.group-meta{font-size:0.98rem;opacity:.85;margin-top:6px;}
+		.group-count{font-size:1.1em;font-weight:800;}
+		table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.08);border-radius:14px;overflow:hidden;box-shadow:0 4px 24px #0002;}
+		th,td{padding:10px 8px;text-align:right;}
+		th{background:rgba(11,58,130,.85);color:#fff;font-weight:800;}
+		tr:nth-child(even){background:rgba(255,255,255,.04)}
+		.score{font-weight:800;}
+		.back{margin:18px 0;display:inline-block;color:#fff;text-decoration:none;font-weight:700;}
+		.nav-bar{margin:24px 0 0;display:flex;gap:12px;justify-content:center;}
+		.nav-btn{background:#fff;color:#0b3a82;border-radius:10px;padding:8px 18px;font-weight:700;border:none;cursor:pointer;transition:.2s;box-shadow:0 2px 8px #0001;}
+		.nav-btn:active{background:#eaf3ff;}
+		@media(max-width:700px){.groups{flex-direction:column;gap:8px}.container{padding:0 2px}}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<a href="../index.html" class="back">← חזרה לעמוד הראשי</a>
+		<h1>שכבת ט׳ – תלמידים והקבצות</h1>
+		<div class="groups" id="groups"></div>
+		<div class="nav-bar" id="navBar"></div>
+		<table>
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>שם פרטי</th>
+					<th>שם משפחה</th>
+					<th>כיתה</th>
+					<th>הקבצה</th>
+					<th>ציון</th>
+				</tr>
+			</thead>
+			<tbody id="students"></tbody>
+		</table>
+	</div>
+	<script>
+			// טוען תלמידים אמיתיים מ-data/students.json ומחשב הקבצות אמיתיות
+			async function fetchStudents() {
+				const res = await fetch('../data/students.json', {cache: 'no-store'});
+				const data = await res.json();
+				return Array.isArray(data['תלמידים']) ? data['תלמידים'] : [];
+			}
+
+			// מיפוי הקבצות לפי config (פשטני, אפשר להרחיב)
+			function getGroupInfo(student) {
+				if(student['הקבצה'] === 'מדעית') return { group: 'מדעית', teacher: 'יניב רז' };
+				if(student['הקבצה'] === 'מקדמת') return { group: 'מקדמת', teacher: student['מורה'] || '' };
+				if(student['הקבצה']) return { group: student['הקבצה'], teacher: student['מורה'] || '' };
+				return { group: 'לא שובץ', teacher: '' };
+			}
+
+			function renderGroups(students) {
+				const groupMap = {};
+				students.forEach(s => {
+					const info = getGroupInfo(s);
+					if (!groupMap[info.group]) groupMap[info.group] = { teacher: info.teacher, students: [] };
+					groupMap[info.group].students.push(s);
+				});
+				const groupKeys = Object.keys(groupMap);
+				const groupsDiv = document.getElementById('groups');
+				groupsDiv.innerHTML = '';
+				groupKeys.forEach((g,i) => {
+					const btn = document.createElement('button');
+					btn.className = 'group-btn'+(i===0?' active':'');
+					btn.innerHTML = `<div>${g}</div><div class="group-meta">מורה: ${groupMap[g].teacher}</div><div class="group-count">${groupMap[g].students.length} תלמידים</div>`;
+					btn.onclick = ()=>renderTable(g, groupMap);
+					groupsDiv.appendChild(btn);
+				});
+				const navBar = document.getElementById('navBar');
+				navBar.innerHTML = '';
+				groupKeys.forEach((g,i) => {
+					const nav = document.createElement('button');
+					nav.className = 'nav-btn';
+					nav.textContent = g;
+					nav.onclick = ()=>renderTable(g, groupMap);
+					navBar.appendChild(nav);
+				});
+				renderTable(groupKeys[0], groupMap);
+			}
+
+			function renderTable(group, groupMap) {
+				document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
+				Array.from(document.getElementById('groups').children).find(b=>b.textContent.includes(group)).classList.add('active');
+				const tbody = document.getElementById('students');
+				tbody.innerHTML = '';
+				let n=1;
+				(groupMap[group]?.students||[]).forEach(s => {
+					tbody.innerHTML += `<tr><td>${n++}</td><td>${s['שם פרטי']||''}</td><td>${s['שם משפחה']||''}</td><td>${s['כיתה']||''}</td><td>${s['הקבצה']||''}</td><td class="score">${s['ציון']||'—'}</td></tr>`;
+				});
+			}
+
+			fetchStudents().then(students => {
+				renderGroups(students);
+			});
+	</script>
+</body>
+</html>

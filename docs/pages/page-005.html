@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>יומן ציונים — grades-app</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/css/theme.css">
+</head>
+<body>
+  <header class="site-header app-header">
+    <div class="container header-inner">
+      <div class="brand"><h1 id="title">יומן ציונים</h1></div>
+      <nav style="display:flex;gap:8px;">
+        <button onclick="toPage(1)" class="btn grade-7">ז</button>
+        <button onclick="toPage(2)" class="btn grade-8">ח</button>
+        <button onclick="toPage(3)" class="btn grade-9">ט</button>
+        <button onclick="toPage(0)" class="btn">לוח בקרה</button>
+        <button onclick="toPage(4)" class="btn">משימות</button>
+        <button onclick="toPage(5)" class="btn active">יומן ציונים</button>
+      </nav>
+      <a href="/index.html" class="btn ghost small" style="margin-inline-start:auto">דף הבית</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="row" style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+      <input id="q" type="search" placeholder="חיפוש..." class="btn" style="background:var(--blue-2);border:1px solid rgba(255,255,255,.12);flex:1;color:var(--ink);">
+      <button id="btn-wa" class="btn small">שיתוף וואטסאפ</button>
+      <button id="btn-mail" class="btn small">שליחה במייל</button>
+      <button id="btn-export" class="btn small">יצוא CSV</button>
+    </div>
+
+    <div class="card" style="overflow:auto">
+      <table id="tbl" style="width:100%;border-collapse:collapse"></table>
+    </div>
+    <div class="muted" id="stats" style="margin-top:8px"></div>
+  </main>
+
+  <script type="module">
+  // יומן ציונים — קורא CSV נתון בפרמטר ?csv= ושם בכותרת ?title=
+  // אין כתיבה לקבצים. כל ההליך מתבצע ב-client בלבד.
+  const p = new URLSearchParams(location.search);
+  const csvUrl = p.get('csv');
+  const customTitle = p.get('title');
+  const titleEl = document.getElementById('title');
+  if(customTitle) titleEl.textContent = customTitle;
+  if(!csvUrl){ titleEl.textContent = 'חסר פרמטר csv'; document.getElementById('tbl').innerHTML = '<tbody><tr><td style="padding:12px">יש לספק ?csv=</td></tr></tbody>'; throw new Error('no csv'); }
+
+  const tbl = document.getElementById('tbl'); const q = document.getElementById('q'); const stats = document.getElementById('stats');
+  let rows = [], cols = [], filtered = [];
+
+  // parser פשוט המאפשר גרשיים ותווי פסיקים בתוך שדות
+  function parseCsv(text){
+    const lines = text.replace(/\r\n/g,'\n').split('\n').filter(l=>l.length>0);
+    if(lines.length===0) return {cols:[],rows:[]};
+    const header = splitCsvLine(lines[0]);
+    const data = lines.slice(1).map(l=>{
+      const vals = splitCsvLine(l);
+      const obj = {};
+      header.forEach((h,i)=> obj[h] = vals[i] ?? '');
+      return obj;
+    });
+    return {cols: header, rows: data};
+  }
+
+  function splitCsvLine(line){
+    const res = []; let cur = '', inQ = false;
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(ch === '"'){
+        // אם צמח גרשיים כפולים בתוך שדה
+        if(inQ && line[i+1] === '"'){ cur += '"'; i++; continue; }
+        inQ = !inQ; continue;
+      }
+      if(ch === ',' && !inQ){ res.push(cur); cur=''; continue; }
+      cur += ch;
+    }
+    res.push(cur);
+    return res.map(s=>s.trim());
+  }
+
+  async function loadCsv(url){
+    const text = await fetch(url, {cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('fetch failed'); return r.text(); });
+    const parsed = parseCsv(text);
+    cols = parsed.cols; rows = parsed.rows; filtered = rows.slice();
+  }
+
+  // render table based on filtered
+  let sortState = {col:null,dir:1};
+  function render(data){
+    // header
+    const thead = `<thead><tr>${cols.map(c=>`<th data-col="${escapeHtml(c)}" style="text-align:right;padding:8px;border-bottom:1px solid rgba(255,255,255,.12);cursor:pointer">${escapeHtml(c)} <span style='opacity:.6'>↕</span></th>`).join('')}</tr></thead>`;
+    const tbody = `<tbody>${data.map(r=>`<tr>${cols.map(c=>`<td style="padding:8px;border-bottom:1px solid rgba(255,255,255,.06)">${escapeHtml(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody>`;
+    tbl.innerHTML = thead + tbody;
+
+    // סטטיסטיקה — חישוב ממוצע בעמודת ציון
+    const scoreKey = cols.find(k=>/ציון|score/i.test(k)) || cols.find(k=>/grade/i.test(k)) || null;
+    const nums = data.map(r=>{
+      if(!scoreKey) return NaN;
+      const v = String(r[scoreKey]||'').replace(/[^0-9.\-]/g,'').trim();
+      const n = Number(v); return isFinite(n)?n:NaN;
+    }).filter(n=>!isNaN(n));
+    const avg = nums.length ? (nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1) : '—';
+    stats.textContent = `סך שורות: ${data.length} • ממוצע: ${avg}`;
+
+    // מיון ע"י לחיצה על TH
+    tbl.querySelectorAll('th').forEach(th=>{
+      th.onclick = ()=>{
+        const c = th.dataset.col;
+        if(sortState.col === c) sortState.dir = -sortState.dir; else { sortState.col = c; sortState.dir = 1; }
+        const numeric = data.every(r=>{ const v=String(r[c]||'').replace(/[^0-9.\-]/g,''); return v==='' || /^-?\d+(\.\d+)?$/.test(v); });
+        filtered.sort((a,b)=>{
+          const A = (a[c]||'').toString(); const B = (b[c]||'').toString();
+          if(numeric){ const na = Number(A.replace(/[^0-9.\-]/g,''))||0; const nb = Number(B.replace(/[^0-9.\-]/g,''))||0; return (na-nb)*sortState.dir; }
+          return A.localeCompare(B,'he') * sortState.dir;
+        });
+        render(filtered);
+      };
+    });
+  }
+
+  function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function filter(){
+    const term = q.value.trim().toLowerCase();
+    filtered = rows.filter(r => cols.some(c => (r[c]||'').toString().toLowerCase().includes(term)));
+    render(filtered);
+  }
+
+  function toCsv(data){
+    const esc = s => /[",\n]/.test(s) ? `"${String(s).replace(/"/g,'""')}"` : String(s);
+    const head = cols.map(esc).join(',');
+    const body = data.map(r=> cols.map(c=>esc(r[c]??'')).join(',')).join('\n');
+    return head + '\n' + body;
+  }
+
+  // שיתוף — מסכמים עד 30 שורות
+  function shareSummaryViaWhatsApp(){
+    const lines = filtered.slice(0,30).map(r=>{
+      const name = (r['שם פרטי'] || r['שם'] || r[cols[0]] || '').trim();
+      const score = (r['ציון'] || r['score'] || r['grade'] || '').toString().trim();
+      return `${name} — ${score}`;
+    }).filter(l=>l.trim());
+    const text = `${titleEl.textContent}\n${lines.join('\n')}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');
+  }
+
+  function shareViaMail(){
+    const subject = titleEl.textContent || 'יומן ציונים';
+    const body = `${titleEl.textContent}\n${filtered.slice(0,100).map(r=> cols.map(c=>`${c}: ${r[c]||''}`).join(' | ')).join('\n')}`;
+    location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  document.getElementById('btn-wa').addEventListener('click', shareSummaryViaWhatsApp);
+  document.getElementById('btn-mail').addEventListener('click', shareViaMail);
+  document.getElementById('btn-export').addEventListener('click', ()=>{
+    const csv = toCsv(filtered);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    a.download = (titleEl.textContent || 'grades') + '.csv'; a.click();
+  });
+
+  q.addEventListener('input', filter);
+
+  // אתחול: טען CSV והרנדר
+  try{
+    await loadCsv(csvUrl);
+    render(rows);
+  }catch(e){
+    console.info('שגיאה בקריאת CSV:', e);
+    document.getElementById('tbl').innerHTML = `<tbody><tr><td style="padding:12px">לא ניתן לקרוא את הקובץ: ${escapeHtml(csvUrl)}</td></tr></tbody>`;
+  }
+  </script>
+</body>
+</html>
