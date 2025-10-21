@@ -108,6 +108,13 @@
     </form>
   </dialog>
 
+  <p id="last-updated" dir="rtl" style="font-size:.9rem;opacity:.8"></p>
+  <script>
+    fetch('./meta/progress.json').then(r=>r.json()).then(d=>{
+      document.getElementById('last-updated').textContent =
+        `עודכן לאחרונה: ${new Date(d.timestamp||Date.now()).toLocaleString('he-IL')}`;
+    }).catch(()=>{});
+  </script>
   <script src="script.js" defer></script>
   <!-- HMR check: modified for live reload test -->
 </body>
