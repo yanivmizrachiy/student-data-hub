@@ -1,0 +1,38 @@
+name: Validate Excel Imports
+
+on:
+  push:
+    paths:
+      - 'שכבת *.xlsx'
+      - 'scripts/rosters-from-excel.mjs'
+      - '.github/workflows/validate-excels.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'data/rosters/**'
+      - 'data/summary/**'
+      - 'logs/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Excel Import
+        run: node scripts/rosters-from-excel.mjs
+      - name: Upload log artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: excel-import-log
+          path: logs/excel-import.log
+      - name: Check output files
+        run: |
+          test -f data/rosters/Z.json && test -f data/rosters/H.json && test -f data/rosters/T.json && test -f data/summary/counts.json
+          jq '.total > 0 and (.byGrade["ז"] > 0 or .byGrade["ח"] > 0 or .byGrade["ט"] > 0)' data/summary/counts.json | grep true

@@ -5,6 +5,8 @@
     "dev": "vite --port 5173"
   },
   "dependencies": {
+    "fast-levenshtein": "^3.0.0",
+    "fs-extra": "^11.3.2",
     "js-yaml": "^4.1.0",
     "xlsx": "^0.18.5"
   },
