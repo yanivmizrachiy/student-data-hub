@@ -5,8 +5,11 @@
     "dev": "vite --port 5173"
   },
   "dependencies": {
+    "chardet": "^2.1.0",
     "fast-levenshtein": "^3.0.0",
     "fs-extra": "^11.3.2",
+    "globby": "^15.0.0",
+    "iconv-lite": "^0.7.0",
     "js-yaml": "^4.1.0",
     "xlsx": "^0.18.5"
   },
