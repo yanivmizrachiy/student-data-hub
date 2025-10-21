@@ -1,4 +1,7 @@
+
 # student-data-hub
+
+[![Excel Import](https://img.shields.io/github/actions/workflow/status/yanivmizrachiy/student-data-hub/validate-excels.yml?label=Excel%20Import)](https://github.com/yanivmizrachiy/student-data-hub/actions/workflows/validate-excels.yml)
 
 ## Live Preview (HMR) עם Vite
 
