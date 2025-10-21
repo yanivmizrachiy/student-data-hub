@@ -32,22 +32,14 @@ function isExcluded(first, last) {
 
 function parseSheet(sheet, grade) {
   const rows = xlsx.utils.sheet_to_json(sheet, {header:1, defval:''});
-  // חפש שורת כותרות אמיתית (כוללת גם "שם פרטי" וגם "שם משפחה")
-  let headerRowIdx = rows.findIndex(r =>
-    r.some(cell => normName(cell).includes('פרטי')) &&
-    r.some(cell => normName(cell).includes('משפחה'))
-  );
-  if(headerRowIdx < 0) throw new Error('לא נמצאה שורת כותרות עם "שם פרטי" ו-"שם משפחה"');
-  let headers = rows[headerRowIdx].map(normName);
+  let headers = rows[0].map(normName);
   let firstIdx = headers.findIndex(h=>h.includes('פרטי'));
   let lastIdx = headers.findIndex(h=>h.includes('משפחה'));
   let groupIdx = headers.findIndex(h=>h.includes('הקבצה')||h.includes('קבוצה'));
   let classIdx = headers.findIndex(h=>h.includes('כיתה'));
-  let teacherIdx = headers.findIndex(h=>h.includes('מורה'));
-  let scoreIdx = headers.findIndex(h=>h.includes('ציון'));
   if(firstIdx<0||lastIdx<0) throw new Error('Missing שם פרטי/משפחה');
   const data = [];
-  for(let i=headerRowIdx+1;i<rows.length;i++){
+  for(let i=1;i<rows.length;i++){
     const row = rows[i];
     const first = normName(row[firstIdx]);
     const last = normName(row[lastIdx]);
@@ -55,9 +47,7 @@ function parseSheet(sheet, grade) {
     if(isExcluded(first,last)) continue;
     let group = groupIdx>=0 ? normName(row[groupIdx]) : '';
     let klass = classIdx>=0 ? normName(row[classIdx]) : '';
-    let teacher = teacherIdx>=0 ? normName(row[teacherIdx]) : '';
-    let score = scoreIdx>=0 ? normName(row[scoreIdx]) : '';
-    data.push({first,last,grade,group:group||'לא שובצו',class:klass,teacher,score});
+    data.push({first,last,grade,group:group||'לא שובצו',class:klass});
   }
   return data;
 }

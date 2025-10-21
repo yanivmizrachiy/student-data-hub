@@ -30,32 +30,22 @@
 <body>
 	<div class="container">
 		<a href="../index.html" class="back">← חזרה לעמוד הראשי</a>
-		<h1 id="main-title"></h1>
-		<nav class="breadcrumb" id="breadcrumb"></nav>
+		<h1>שכבת ח׳ – תלמידים והקבצות</h1>
 		<div class="groups" id="groups"></div>
 		<div class="nav-bar" id="navBar"></div>
-		<table class="students" dir="rtl">
+		<table>
 			<thead>
 				<tr>
-					<th scope="col">#</th>
-					<th scope="col">שם משפחה</th>
-					<th scope="col">שם פרטי</th>
-					<th scope="col">כיתה</th>
-					<th scope="col">סוג המבחן</th>
+					<th>#</th>
+					<th>שם פרטי</th>
+					<th>שם משפחה</th>
+					<th>כיתה</th>
+					<th>הקבצה</th>
+					<th>ציון</th>
 				</tr>
 			</thead>
 			<tbody id="students"></tbody>
-			<tfoot>
-				<tr>
-					<td colspan="5">
-						<strong>ממוצע:</strong> <span id="avg"></span>
-						&nbsp;&nbsp;|&nbsp;&nbsp;
-						<strong>סה״כ תלמידים:</strong> <span id="total"></span>
-					</td>
-				</tr>
-			</tfoot>
 		</table>
-		<p class="note">⚠ מי שליד שמו כוכבית משתתף בתוכנית "מלקות ללמידה".</p>
 	</div>
 		<script>
 			// טוען תלמידים אמיתיים מ-data/students.json ומחשב הקבצות אמיתיות
@@ -102,39 +92,15 @@
 				renderTable(groupKeys[0], groupMap);
 			}
 
-			function renderClassTable(container, rawRows, examLabel, groupName, teacherName, gradeLabel) {
-				const coll = new Intl.Collator('he');
-				const rows = [...rawRows].sort((a,b)=> coll.compare(a.last,b.last) || coll.compare(a.first,b.first));
-				const tbody = container.querySelector('tbody');
-				tbody.innerHTML = '';
-				let sum = 0, cnt = 0;
-				rows.forEach((r, i) => {
-					const tr = document.createElement('tr');
-					const star = r.star ? ' ⭐' : '';
-					const score = (typeof r.score === 'number') ? r.score : '';
-					if (typeof r.score === 'number') { sum += r.score; cnt++; }
-					tr.innerHTML = `
-					  <td class="idx">${i+1}</td>
-					  <td class="last">${r.last||''}${star}</td>
-					  <td class="first">${r.first||''}</td>
-					  <td class="class">${r.class||'לא שובצו'}</td>
-					  <td class="exam">${examLabel||r.exam||''}</td>
-					`;
-					tbody.appendChild(tr);
-				});
-				container.querySelector('#total').textContent = rows.length;
-				container.querySelector('#avg').textContent = cnt ? (sum/cnt).toFixed(2) : '—';
-				document.getElementById('main-title').textContent = `שכבת ${gradeLabel} — הקבצה ${groupName} — מורה מלמד/ת: ${teacherName}`;
-				document.getElementById('breadcrumb').innerHTML = `<a href="../index.html">בית</a> &rsaquo; <a href="#">שכבת ${gradeLabel}</a> &rsaquo; <span>${groupName}</span>`;
-			}
-
 			function renderTable(group, groupMap) {
 				document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
 				Array.from(document.getElementById('groups').children).find(b=>b.textContent.includes(group)).classList.add('active');
-				const students = groupMap[group]?.students||[];
-				const container = document.querySelector('.container');
-				const teacher = groupMap[group]?.teacher||'';
-				renderClassTable(container, students, "מבחן מיפוי דצמבר", group, teacher, 'ח');
+				const tbody = document.getElementById('students');
+				tbody.innerHTML = '';
+				let n=1;
+				(groupMap[group]?.students||[]).forEach(s => {
+					tbody.innerHTML += `<tr><td>${n++}</td><td>${s['שם פרטי']||''}</td><td>${s['שם משפחה']||''}</td><td>${s['כיתה']||''}</td><td>${s['הקבצה']||''}</td><td class="score">${s['ציון']||'—'}</td></tr>`;
+				});
 			}
 
 			fetchStudents().then(students => {
