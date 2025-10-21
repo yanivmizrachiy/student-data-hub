@@ -47,6 +47,65 @@
 			<tbody id="students"></tbody>
 		</table>
 	</div>
-	<script src="../assets/app.js"></script>
+		<script>
+			// טוען תלמידים אמיתיים מ-data/students.json ומחשב הקבצות אמיתיות
+			async function fetchStudents() {
+				const res = await fetch('../data/students.json', {cache: 'no-store'});
+				const data = await res.json();
+				return Array.isArray(data['תלמידים']) ? data['תלמידים'] : [];
+			}
+
+			// מיפוי הקבצות לפי config (פשטני, אפשר להרחיב)
+			function getGroupInfo(student) {
+				if(student['הקבצה'] === 'מדעית') return { group: 'מדעית', teacher: 'יניב רז' };
+				if(student['הקבצה'] === 'מקדמת') return { group: 'מקדמת', teacher: student['מורה'] || '' };
+				if(student['הקבצה']) return { group: student['הקבצה'], teacher: student['מורה'] || '' };
+				return { group: 'לא שובץ', teacher: '' };
+			}
+
+			function renderGroups(students) {
+				const groupMap = {};
+				students.forEach(s => {
+					const info = getGroupInfo(s);
+					if (!groupMap[info.group]) groupMap[info.group] = { teacher: info.teacher, students: [] };
+					groupMap[info.group].students.push(s);
+				});
+				const groupKeys = Object.keys(groupMap);
+				const groupsDiv = document.getElementById('groups');
+				groupsDiv.innerHTML = '';
+				groupKeys.forEach((g,i) => {
+					const btn = document.createElement('button');
+					btn.className = 'group-btn'+(i===0?' active':'');
+					btn.innerHTML = `<div>${g}</div><div class="group-meta">מורה: ${groupMap[g].teacher}</div><div class="group-count">${groupMap[g].students.length} תלמידים</div>`;
+					btn.onclick = ()=>renderTable(g, groupMap);
+					groupsDiv.appendChild(btn);
+				});
+				const navBar = document.getElementById('navBar');
+				navBar.innerHTML = '';
+				groupKeys.forEach((g,i) => {
+					const nav = document.createElement('button');
+					nav.className = 'nav-btn';
+					nav.textContent = g;
+					nav.onclick = ()=>renderTable(g, groupMap);
+					navBar.appendChild(nav);
+				});
+				renderTable(groupKeys[0], groupMap);
+			}
+
+			function renderTable(group, groupMap) {
+				document.querySelectorAll('.group-btn').forEach(b=>b.classList.remove('active'));
+				Array.from(document.getElementById('groups').children).find(b=>b.textContent.includes(group)).classList.add('active');
+				const tbody = document.getElementById('students');
+				tbody.innerHTML = '';
+				let n=1;
+				(groupMap[group]?.students||[]).forEach(s => {
+					tbody.innerHTML += `<tr><td>${n++}</td><td>${s['שם פרטי']||''}</td><td>${s['שם משפחה']||''}</td><td>${s['כיתה']||''}</td><td>${s['הקבצה']||''}</td><td class="score">${s['ציון']||'—'}</td></tr>`;
+				});
+			}
+
+			fetchStudents().then(students => {
+				renderGroups(students);
+			});
+		</script>
 </body>
 </html>
