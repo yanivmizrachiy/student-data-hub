@@ -1,14 +1,14 @@
 {
-  "name": "grades-app — מרכז נתוני תלמידים",
-  "short_name": "grades-app",
-  "lang": "he",
+  "name": "ניהול תלמידים",
+  "short_name": "תלמידים",
+  "lang": "he-IL",
   "dir": "rtl",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#071028",
-  "theme_color": "#0B3D91",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
   "icons": [
-    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "./assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }

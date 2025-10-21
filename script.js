@@ -1,3 +1,4 @@
+if(window.__APP_INIT__){throw new Error('__APP_INIT__ duplicate')}window.__APP_INIT__=true;document.addEventListener('DOMContentLoaded',init,{once:true});
 // מאזין לטעינה ומפעיל את כל הלוגיקה
 window.addEventListener('load', () => {
   // אלמנטים מרכזיים
